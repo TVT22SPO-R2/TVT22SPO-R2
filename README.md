@@ -1,2 +1,3 @@
-# TVT22SPO-R2
- Mobile development project
+React native application.
+
+Online shop where you can rent car parking spaces
