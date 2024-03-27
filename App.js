@@ -3,7 +3,7 @@ import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './components/Auth';
-import HomeScreen from './components/homeScreen';
+import HomeScreen from './screens/homeScreen';
 import { auth } from './firebase/Config';
 
 const Stack = createNativeStackNavigator();
