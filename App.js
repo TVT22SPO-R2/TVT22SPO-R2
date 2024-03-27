@@ -8,6 +8,7 @@ import { auth } from './firebase/Config';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import BottomNavigator from './components/BottomNavigator';
 import MapScreen from './screens/mapScreen';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -43,19 +44,20 @@ const App = () => {
         <Tab.Screen name="Home" component={HomeScreen} />
         <Tab.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Tab.Screen name="Settings" component={BottomNavigator} />
-        <Tab.Screen name="Map" component={MapScreen} />
+        <Tab.Screen
+          name="Map"
+          component={MapScreen}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="map" color={color} size={size} />
+            ),
+          }}
+        />
       </Tab.Navigator>
     </NavigationContainer>
   );
 };
 
-const StackScreen = () => {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="Home" component={HomeScreen} />
-    </Stack.Navigator>
-  );
-};
 
 const styles = StyleSheet.create({
   container: {
