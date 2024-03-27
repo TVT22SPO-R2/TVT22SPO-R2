@@ -1,19 +1,23 @@
+// auth.js
 import React, { useState } from 'react';
 import { StyleSheet, TextInput, Button, View, Text } from 'react-native';
 import { auth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from '../firebase/Config';
+import { useUser } from './UserContext'; // Adjust the path as necessary
+import { useNavigation } from '@react-navigation/native'; // Import useNavigation
 
-
-
-export default function Login({ onLoginSuccess }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+export default function Login() {
+  const [email, setEmail] = useState('testi@jkjk.com');
+  const [password, setPassword] = useState('testitesti');
   const [error, setError] = useState('');
+  const { setUser } = useUser(); // Use the context
+
+  const navigation = useNavigation();
 
   const handleSignUp = async () => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       console.log("User created:", userCredential.user);
-      onLoginSuccess(userCredential.user);
+      setUser(userCredential.user); // Update user state using context
     } catch (error) {
       console.error(error);
       setError(error.message);
@@ -24,10 +28,11 @@ export default function Login({ onLoginSuccess }) {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log(userCredential.user);
-      onLoginSuccess(userCredential.user); // Call the prop function when login is successful
+      setUser(userCredential.user); // Update user state using context
+      navigation.navigate('Home');
     } catch (error) {
       console.error(error);
-      setError(error.message); // Set error message to display
+      setError(error.message);
     }
   };
 

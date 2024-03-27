@@ -1,49 +1,42 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ActivityIndicator } from 'react-native';
+import React from 'react';
+import { StyleSheet, View, ActivityIndicator, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Login from './components/Auth';
 import HomeScreen from './screens/homeScreen';
-import { auth } from './firebase/Config';
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import BottomNavigator from './components/BottomNavigator';
 import MapScreen from './screens/mapScreen';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-const Stack = createNativeStackNavigator();
+import { UserProvider, useUser } from './components/UserContext'; // Assuming useUser is exported from UserContext
+
 const Tab = createBottomTabNavigator();
 
-
-const App = () => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-    });
-    return unsubscribe; // Make sure we un-register Firebase observers when the component unmounts.
-  }, []);
+// Define a separate component to use the context
+function AppContent() {
+  const { user, setUser, loading } = useUser(); // Adjust according to your UserContext
 
   if (loading) {
     return (
       <View style={styles.centered}>
         <ActivityIndicator size="large" />
+        <Text>Loading...</Text>
       </View>
     );
   }
-
-  const onLoginSuccess = (loggedInUser) => {
-    setUser(loggedInUser); // This can be improved depending on how you manage your user's session
-  };
 
   return (
     <NavigationContainer>
       <Tab.Navigator>
         <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Tab.Screen name="Settings" component={BottomNavigator} />
+        {!user && (
+          <Tab.Screen 
+            name="Login" 
+            children={() => <Login onLoginSuccess={setUser} />} 
+            options={{ headerShown: false }}
+          />
+        )}
         <Tab.Screen
           name="Map"
           component={MapScreen}
@@ -56,15 +49,18 @@ const App = () => {
       </Tab.Navigator>
     </NavigationContainer>
   );
+}
+
+// Wrap the AppContent with UserProvider at the top level
+const App = () => {
+  return (
+    <UserProvider>
+      <AppContent />
+    </UserProvider>
+  );
 };
 
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   centered: {
     flex: 1,
     justifyContent: 'center',
