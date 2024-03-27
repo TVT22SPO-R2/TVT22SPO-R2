@@ -1,13 +1,13 @@
 // HomeScreen.js
-import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
-import { auth } from '../firebase/Config';
+import React from "react";
+import { View, Text, StyleSheet, Button } from "react-native";
+import { auth } from "../firebase/Config";
 
 export default function HomeScreen({ navigation }) {
   const handleSignOut = async () => {
     try {
       await auth.signOut();
-      navigation.replace('Login');
+      navigation.replace("Login");
     } catch (error) {
       console.error(error);
     }
@@ -17,6 +17,7 @@ export default function HomeScreen({ navigation }) {
     <View style={styles.container}>
       <Text>Welcome to the Home Screen!</Text>
       <Button title="Sign Out" onPress={handleSignOut} />
+      <Button title="Map" onPress={() => navigation.navigate("Map")} />
     </View>
   );
 }
@@ -24,7 +25,7 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
