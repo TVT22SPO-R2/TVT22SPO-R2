@@ -7,6 +7,7 @@ import HomeScreen from './screens/homeScreen';
 import { auth } from './firebase/Config';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import BottomNavigator from './components/BottomNavigator';
+import MapScreen from './screens/mapScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -42,6 +43,7 @@ const App = () => {
         <Tab.Screen name="Home" component={HomeScreen} />
         <Tab.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Tab.Screen name="Settings" component={BottomNavigator} />
+        <Tab.Screen name="Map" component={MapScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   );
