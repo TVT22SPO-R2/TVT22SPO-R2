@@ -5,9 +5,13 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './components/Auth';
 import HomeScreen from './screens/homeScreen';
 import { auth } from './firebase/Config';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import BottomNavigator from './components/BottomNavigator';
 import MapScreen from './screens/mapScreen';
 
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -35,16 +39,21 @@ const App = () => {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        {user ? (
-          <Stack.Screen name="Home" component={HomeScreen} />
-        ) : (
-          <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-          
-        )}
-        <Stack.Screen name="Map" component={MapScreen} />
-      </Stack.Navigator>
+      <Tab.Navigator>
+        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Login" component={Login} options={{ headerShown: false }} />
+        <Tab.Screen name="Settings" component={BottomNavigator} />
+        <Tab.Screen name="Map" component={MapScreen} />
+      </Tab.Navigator>
     </NavigationContainer>
+  );
+};
+
+const StackScreen = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Home" component={HomeScreen} />
+    </Stack.Navigator>
   );
 };
 
