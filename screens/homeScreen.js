@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useUser } from '../components/UserContext'; // Adjust the path as necessary
 import { auth } from "../firebase/Config";
+import { theme } from '../components/themeComponent';
 
 const HomeScreen = () => {
   const { setUser } = useUser();
@@ -20,9 +21,9 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text>Welcome to the Home Screen!</Text>
-      <Button title="Sign Out" onPress={handleSignOut} />
-      <Button title="Map" onPress={() => navigation.navigate("Map")} />
+      <Text style={{ color: theme.colors.text }}>Welcome to the Home Screen!</Text>
+      <Button color={theme.colors.primary} title="Sign Out" onPress={handleSignOut} />
+      <Button color={theme.colors.primary} title="Map" onPress={() => navigation.navigate("Map")} />
     </View>
   );
 };
