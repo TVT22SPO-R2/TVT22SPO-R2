@@ -1,6 +1,6 @@
 // auth.js
 import React, { useState } from 'react';
-import { StyleSheet, TextInput, Button, View, Text } from 'react-native';
+import { StyleSheet, TextInput, View, Text, TouchableOpacity } from 'react-native';
 import { auth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from '../firebase/Config';
 import { useUser } from './UserContext'; // Adjust the path as necessary
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation
@@ -53,12 +53,12 @@ export default function Login() {
         style={styles.input}
         secureTextEntry
       />
-      <View style={styles.button}>
-      <Button title="Login" onPress={handleLogin} />
-      </View>
-      <View style={styles.button}>
-      <Button title="Sign Up" onPress={handleSignUp} />
-      </View>
+       <TouchableOpacity style={styles.buttonStyle} onPress={handleLogin}>
+        <Text style={styles.buttonText}>Login</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.buttonStyle} onPress={handleSignUp}>
+        <Text style={styles.buttonText}>Sign Up</Text>
+      </TouchableOpacity>
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
     </View>
   );
@@ -80,9 +80,16 @@ const styles = StyleSheet.create({
       borderColor: 'gray', // Set the border color
       borderRadius: 5, // Round the corners of the input fields
     },
-    button: {
-      minWidth: 200, // Ensure buttons have a minimum width
-      marginVertical: 10, // Add vertical margin between buttons
+    buttonStyle: {
+      minWidth: 200,
+      backgroundColor: 'orange', // Example button color
+      padding: 10,
+      marginVertical: 10,
+      alignItems: 'center',
+      borderRadius: 5,
+    },
+    buttonText: {
+      color: 'white', // Button text color
     },
     errorText: {
       color: 'red',

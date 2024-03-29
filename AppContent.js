@@ -4,7 +4,8 @@ import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Login from './components/Auth';
 import HomeScreen from './screens/homeScreen';
-import BottomNavigator from './components/BottomNavigator';
+import Settings from './screens/Settings';
+
 import MapScreen from './screens/mapScreen';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import ShoppingCartStack from './components/shoppingCartStack';
@@ -37,7 +38,7 @@ function AppContent() {
         }}
         >
           <Tab.Screen name="Home" component={HomeScreen} />
-          <Tab.Screen name="Settings" component={BottomNavigator} />
+          <Tab.Screen name="Settings" component={Settings} />
           {!user && (
             <Tab.Screen 
               name="Login" 
