@@ -53,10 +53,10 @@ export default function Login() {
         style={styles.input}
         secureTextEntry
       />
-       <TouchableOpacity style={styles.buttonStyle} onPress={handleLogin}>
+       <TouchableOpacity style={[styles.buttonStyle, {backgroundColor: '#a8d5e2'}]} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.buttonStyle} onPress={handleSignUp}>
+      <TouchableOpacity style={[styles.buttonStyle, {backgroundColor: '#ffd449'}]} onPress={handleSignUp}>
         <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       marginBottom: '30%', // Add some bottom margin
       paddingHorizontal: 20, // Add some horizontal padding
+      backgroundColor: '#F8F8F8', // Set a background color
     },
     input: {
       width: '100%', // Make input take the full width of the container
@@ -79,17 +80,17 @@ const styles = StyleSheet.create({
       borderWidth: 1, // Add a border to the input
       borderColor: 'gray', // Set the border color
       borderRadius: 5, // Round the corners of the input fields
+      backgroundColor: '#F8F8F8',
     },
     buttonStyle: {
       minWidth: 200,
-      backgroundColor: 'orange', // Example button color
       padding: 10,
       marginVertical: 10,
       alignItems: 'center',
       borderRadius: 5,
     },
     buttonText: {
-      color: 'white', // Button text color
+      color: 'black', // Button text color
     },
     errorText: {
       color: 'red',

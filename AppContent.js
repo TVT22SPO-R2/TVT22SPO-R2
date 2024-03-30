@@ -13,6 +13,8 @@ import  {theme}  from './components/themeComponent';
 import AddSpot from './screens/addSpot'
 import { useUser } from './components/UserContext'; 
 
+import { Alert } from 'react-native';
+
 const Tab = createBottomTabNavigator();
 
 function AppContent() {
@@ -55,7 +57,8 @@ function AppContent() {
               ),
             }}
           />
-          <Tab.Screen
+
+          {/* <Tab.Screen
             name="Cart"
             component={ShoppingCartStack}
             options={{
@@ -63,7 +66,36 @@ function AppContent() {
                 <MaterialCommunityIcons name="cart" color={color} size={size} />
               ),
             }}
-          />
+          /> */}
+
+          <Tab.Screen
+          name="Cart"
+          component={ShoppingCartStack}
+          listeners={({ navigation }) => ({
+            tabPress: e => {
+              // Estä välilehden vaihto
+              e.preventDefault();
+              // Tarkista, onko käyttäjä kirjautunut sisään
+              if (!user) {
+                // Näytä Alert-ikkuna
+                Alert.alert(
+                  "Kirjaudu sisään", // Otsikko
+                  "Kirjaudu sisään käyttääksesi ostoskoria", // Viesti
+                  [
+                    {
+                      text: "Peruuta",
+                      style: "cancel"
+                    },
+                    { text: "Kirjaudu", onPress: () => navigation.navigate("Login") }
+                  ]
+                );
+              } else {
+                // Salli välilehden vaihto, jos käyttäjä on kirjautunut sisään
+                navigation.navigate("Cart");
+              }
+            },
+          })}
+        />
         <Tab.Screen
             name="AddSpot"
             component={AddSpot} // Import and use the AddSpot screen component

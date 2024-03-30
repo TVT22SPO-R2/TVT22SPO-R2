@@ -25,7 +25,7 @@ export default function Settings() {
                 <>
                     <Text>Welcome back!</Text>
                     <ChangePassword />
-                    <Button title="Sign Out" onPress={handleSignOut} color="#f194ff" />
+                    <Button title="Sign Out" onPress={handleSignOut} color="red" />
                 </>
             ) : (
                 <Text>Please log in, to modify your page</Text>
@@ -39,6 +39,16 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: '#F8F8F8', // Set a background color
+    },
+    Button: {
+        width: '90%',
+        padding: 10,
+        marginVertical: 10,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        borderRadius: 5,
+        alignItems: 'center', // Center the text inside the button
     },
     // Voit lisätä lisää tyylejä tarpeen mukaan
 });

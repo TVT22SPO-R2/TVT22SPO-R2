@@ -23,7 +23,7 @@ export default function ChangePassword() {
         secureTextEntry
         style={styles.input}
       />
-      <TouchableOpacity style={styles.button} onPress={handleChangePassword}>
+      <TouchableOpacity style={[styles.button, {backgroundColor: '#a8d5e2'}]} onPress={handleChangePassword}>
         <Text style={styles.buttonText}>Submit New Password</Text>
       </TouchableOpacity>
     </View>
@@ -51,10 +51,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 5,
-    backgroundColor: 'orange',
     alignItems: 'center', // Center the text inside the button
   },
   buttonText: {
-    color: 'white', // Ensure the text inside the button is easily readable
+    color: 'black', // Ensure the text inside the button is easily readable
   },
 });

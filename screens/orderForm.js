@@ -4,15 +4,20 @@ import { Input, Button } from 'react-native-elements';
 import { Formik } from 'formik';
 import { theme } from '../components/themeComponent';
 
+import { useNavigation } from '@react-navigation/native';
+
 const OrderForm = () => {
+
+  const navigation = useNavigation(); 
+
   return (
     <KeyboardAvoidingView style={[styles.container, { backgroundColor: theme.colors.tertiary } ]} behavior="padding">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
         <Formik
           initialValues={{ firstName: '', lastName: '', address: '', phone: '', email: '' }}
           onSubmit={(values) => {
-            // Handle form submission here
             console.log(values);
+            navigation.navigate('PaymentPage'); // Navigate to PaymentPage after form submission
           }}
         >
           {({ handleChange, handleBlur, handleSubmit, values }) => (
