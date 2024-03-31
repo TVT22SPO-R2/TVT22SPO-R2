@@ -1,17 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, ActivityIndicator, Text, TouchableOpacity } from 'react-native';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Login from './components/Auth';
 import HomeScreen from './screens/homeScreen';
 import Settings from './screens/Settings';
-
 import MapScreen from './screens/mapScreen';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import ShoppingCartStack from './components/shoppingCartStack';
-import  {theme}  from './components/themeComponent';
-import AddSpot from './screens/addSpot'
-import { useUser } from './components/UserContext'; 
+import { theme } from './components/themeComponent';
+import AddSpot from './screens/addSpot';
+import { useUser } from './components/UserContext';
 
 import { Alert } from 'react-native';
 
@@ -20,6 +19,7 @@ const Tab = createBottomTabNavigator();
 function AppContent() {
   const { user, setUser, loading } = useUser();
   const navigation = useNavigation();
+  const [addSpotVisible, setAddSpotVisible] = useState(true);
 
   if (loading) {
     return (
@@ -30,49 +30,82 @@ function AppContent() {
     );
   }
 
+  const handleAddSpot = () => {
+    setAddSpotVisible(false);
+  }
+
   return (
-    
-      <View style={styles.container}>
-        <Tab.Navigator 
-          screenOptions={{
-          tabBarStyle: { backgroundColor: theme.colors.primary},
+    <View style={styles.container}>
+      <Tab.Navigator
+        screenOptions={{
+          tabBarStyle: { backgroundColor: theme.colors.primary },
           tabBarActiveTintColor: theme.colors.text,
         }}
         >
-          <Tab.Screen name="Home" component={HomeScreen} />
-          <Tab.Screen name="Settings" component={Settings} />
-          {!user && (
-            <Tab.Screen 
-              name="Login" 
-              children={() => <Login onLoginSuccess={setUser} />} 
-              options={{ headerShown: false }}
-            />
-          )}
+         <Tab.Screen name="Home" component={HomeScreen} 
+        options={{
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="home" color={color} size={size} />
+            ),
+          }}
+        listeners={{
+            tabPress: () => {
+              setAddSpotVisible(true);
+            }
+          }}/>
+        <Tab.Screen name="Settings" component={Settings} 
+        options={{
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="cogs" color={color} size={size} />
+            ),
+          }}
+          listeners={({ navigation }) => ({
+            tabPress: (e) => {
+              handleAddSpot(); 
+            }
+          })}/>
+        {!user && (
           <Tab.Screen
-            name="Map"
-            component={MapScreen}
+            name="Login"
+            children={() => <Login onLoginSuccess={setUser} />}
             options={{
-              tabBarIcon: ({ color, size }) => (
-                <MaterialCommunityIcons name="map" color={color} size={size} />
-              ),
-            }}
+                tabBarIcon: ({ color, size }) => (
+                    <MaterialCommunityIcons name="login" color={color} size={size} />
+                  ), 
+                headerShown: false }}
+            listeners={({ navigation }) => ({
+                tabPress: (e) => {
+                  handleAddSpot(); 
+                }
+              })}
           />
-
-          {/* <Tab.Screen
-            name="Cart"
-            component={ShoppingCartStack}
-            options={{
-              tabBarIcon: ({ color, size }) => (
-                <MaterialCommunityIcons name="cart" color={color} size={size} />
-              ),
-            }}
-          /> */}
-
-          <Tab.Screen
+        )}
+        <Tab.Screen
+          name="Map"
+          component={MapScreen}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="map" color={color} size={size} />
+            ),
+          }}
+          listeners={({ navigation }) => ({
+            tabPress: (e) => {
+              handleAddSpot(); 
+            }
+          })}
+        />
+                  <Tab.Screen
           name="Cart"
           component={ShoppingCartStack}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="cart" color={color} size={size} />
+            ),
+          }}
           listeners={({ navigation }) => ({
             tabPress: e => {
+            //Piilota AddSpot-nappi, kun käyttäjä siirtyy ostoskoriin
+                handleAddSpot();
               // Estä välilehden vaihto
               e.preventDefault();
               // Tarkista, onko käyttäjä kirjautunut sisään
@@ -94,21 +127,22 @@ function AppContent() {
                 navigation.navigate("Cart");
               }
             },
-          })}
+        })}
         />
         <Tab.Screen
-            name="AddSpot"
-            component={AddSpot} // Import and use the AddSpot screen component
-            options={{
-            tabBarButton: () => null, // Hide the tab button for the AddSpot screen
-            }}
+          name="AddSpot"
+          component={AddSpot}
+          options={{
+            tabBarButton: () => null,
+          }}
         />
-        </Tab.Navigator>
+      </Tab.Navigator>
+      {addSpotVisible && (
         <TouchableOpacity style={styles.floatingButton} onPress={() => navigation.navigate("AddSpot")}>
           <MaterialCommunityIcons name="plus" color="white" size={30} />
         </TouchableOpacity>
-      </View>
-   
+      )}
+    </View>
   );
 }
 
