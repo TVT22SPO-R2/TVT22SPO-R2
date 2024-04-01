@@ -12,8 +12,6 @@ const HomeScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={{ color: theme.colors.text }}>Welcome to the Home Screen!</Text>
-    
-      <Button color={theme.colors.primary} title="Map" onPress={() => navigation.navigate("Map")} />
     </View>
   );
 };

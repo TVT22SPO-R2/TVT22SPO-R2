@@ -62,6 +62,7 @@ const OrderForm = () => {
         >
           {({ handleChange, handleBlur, handleSubmit, values }) => (
             <View style={styles.formContainer}>
+              <Text style={styles.label2}>Please enter your details</Text>
               <Text style={styles.label}>First Name</Text>
               <Input
                 placeholder="Enter your first name"
@@ -138,6 +139,11 @@ const styles = StyleSheet.create({
   submitButton: {
     backgroundColor: '#007BFF',
     marginTop: 20,
+  },
+  label2: {
+    marginBottom: 5,
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
 

@@ -4,6 +4,7 @@ import MapView, { Marker } from 'react-native-maps';
 import { getLocationAsync } from '../components/locationServices';
 import { MaterialIcons } from '@expo/vector-icons';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { firestore, collection, getDocs } from '../firebase/Config';
 
 const MapApiKey = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
 
@@ -13,16 +14,7 @@ const MapScreen = () => {
   const [currentRegion, setCurrentRegion] = useState(null);
   const [searchVisible, setSearchVisible] = useState(false);
   const [lastSelectedLocation, setLastSelectedLocation] = useState(null);
-
-  useEffect(() => {
-    if (lastSelectedLocation) {
-      setCurrentRegion({
-        ...lastSelectedLocation,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      });
-    }
-  }, [lastSelectedLocation]);
+  const [locations, setLocations] = useState([]);
 
   useEffect(() => {
     const fetchUserLocation = async () => {
@@ -35,7 +27,7 @@ const MapScreen = () => {
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           });
-          setLastSelectedLocation(coordinates); // Päivitetään viimeisin valinta
+          setLastSelectedLocation(coordinates);
         }
       } catch (error) {
         console.error('Error fetching location:', error);
@@ -45,17 +37,65 @@ const MapScreen = () => {
     fetchUserLocation();
   }, [currentRegion]);
 
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const locationsCollection = collection(firestore, 'Spots');
+        const querySnapshot = await getDocs(locationsCollection);
+        const fetchedLocations = [];
+
+        for (const doc of querySnapshot.docs) {
+          const { price, description, location } = doc.data();
+          const latitude = location.lat;
+          const longitude = location.lng;
+
+          const address = await fetchAddressFromCoords(latitude, longitude);
+          fetchedLocations.push({ latitude, longitude, price, description, address });
+        }
+
+        setLocations(fetchedLocations);
+      } catch (error) {
+        console.error('Error fetching locations:', error);
+      }
+    };  
+
+    fetchLocations();
+  }, []);
+
+  const fetchAddressFromCoords = async (latitude, longitude) => {
+    try {
+      const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${MapApiKey}`);
+      const data = await response.json();
+      if (data.results && data.results.length > 0) {
+        return data.results[0].formatted_address;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error fetching address:', error);
+      return null;
+    }
+  };
+  
+  const handleMarkerPress = (marker) => {
+    console.log('Marker pressed:', marker);
+  };
+
   const handlePlaceSelected = useCallback(async (data) => {
     console.log('Selected Place Data:', data);
-
+  
     try {
       const placeDetails = await fetchPlaceDetails(data.place_id);
       console.log('Place Details:', placeDetails);
-
+  
       if (placeDetails && placeDetails.geometry && placeDetails.geometry.location) {
         const { lat, lng } = placeDetails.geometry.location;
         setSearchedLocation({ latitude: lat, longitude: lng });
-        setLastSelectedLocation({ latitude: lat, longitude: lng }); // Päivitetään viimeisin valinta
+        setCurrentRegion({
+          latitude: lat,
+          longitude: lng,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        });
       } else {
         console.warn('Failed to retrieve location details for the selected place:', placeDetails);
       }
@@ -63,6 +103,7 @@ const MapScreen = () => {
       console.error('Error fetching place details:', error);
     }
   }, []);
+  
 
   const fetchPlaceDetails = async (placeId) => {
     try {
@@ -141,6 +182,16 @@ const MapScreen = () => {
         style={{ flex: 1 }}
         region={currentRegion}
       >
+      {locations.map((location, index) => (
+        <Marker
+          key={index}
+          coordinate={{ latitude: location.latitude, longitude: location.longitude }}
+          title={location.address || 'Unknown Address'}
+          description={`${location.price}, ${location.description}`}
+          pinColor="green"
+          onPress={() => handleMarkerPress(location)}
+        />
+      ))}
         {searchedLocation && (
           <Marker
             coordinate={{
