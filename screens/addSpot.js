@@ -45,7 +45,7 @@ export default function AddSpot() {
             await addDoc(collection(firestore, 'Spots'), spotData);
             console.log('Spot added successfully!');
 
-            // Reset state variables after submission
+            
             setFirstName('');
             setLastName('');
             setPrice('');
@@ -54,7 +54,6 @@ export default function AddSpot() {
             setImages([]);
             setShowInputs(false);
 
-            // Show alert after successful submission
             Alert.alert(
                 'Spot Submitted',
                 'Your spot has been submitted successfully.',
@@ -67,7 +66,7 @@ export default function AddSpot() {
 
     const handlePlaceSelect = (data, details = null) => {
         setLocation(details.geometry.location);
-        setShowInputs(true); // Show inputs when address is selected
+        setShowInputs(true);
     };
 
     return (

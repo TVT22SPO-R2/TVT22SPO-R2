@@ -117,14 +117,13 @@ const MapScreen = () => {
   };
 
   const handleGPSButtonPress = () => {
-    if (userLocation) {
       setCurrentRegion({
-        ...userLocation,
+        ...userLocation, 
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       });
+      console.log('User Location:', userLocation);
     }
-  };
 
   const toggleSearchVisibility = () => {
     setSearchVisible(!searchVisible);
