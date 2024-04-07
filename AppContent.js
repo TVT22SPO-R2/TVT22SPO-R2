@@ -11,6 +11,7 @@ import ShoppingCartStack from './components/shoppingCartStack';
 import { theme } from './components/themeComponent';
 import AddSpot from './screens/addSpot';
 import { useUser } from './components/UserContext';
+import ViewProduct from './screens/viewProduct';
 
 import { Alert } from 'react-native';
 
@@ -41,43 +42,44 @@ function AppContent() {
           tabBarStyle: { backgroundColor: theme.colors.primary },
           tabBarActiveTintColor: theme.colors.text,
         }}
-        >
-         <Tab.Screen name="Home" component={HomeScreen} 
-        options={{
+      >
+        <Tab.Screen name="Home" component={HomeScreen}
+          options={{
             tabBarIcon: ({ color, size }) => (
               <MaterialCommunityIcons name="home" color={color} size={size} />
             ),
           }}
-        listeners={{
+          listeners={{
             tabPress: () => {
               setAddSpotVisible(true);
             }
-          }}/>
-        <Tab.Screen name="Settings" component={Settings} 
-        options={{
+          }} />
+        <Tab.Screen name="Settings" component={Settings}
+          options={{
             tabBarIcon: ({ color, size }) => (
               <MaterialCommunityIcons name="cogs" color={color} size={size} />
             ),
           }}
           listeners={({ navigation }) => ({
             tabPress: (e) => {
-              handleAddSpot(); 
+              handleAddSpot();
             }
-          })}/>
+          })} />
         {!user && (
           <Tab.Screen
             name="Login"
             children={() => <Login onLoginSuccess={setUser} />}
             options={{
-                tabBarIcon: ({ color, size }) => (
-                    <MaterialCommunityIcons name="login" color={color} size={size} />
-                  ), 
-                headerShown: false }}
+              tabBarIcon: ({ color, size }) => (
+                <MaterialCommunityIcons name="login" color={color} size={size} />
+              ),
+              headerShown: false
+            }}
             listeners={({ navigation }) => ({
-                tabPress: (e) => {
-                  handleAddSpot(); 
-                }
-              })}
+              tabPress: (e) => {
+                handleAddSpot();
+              }
+            })}
           />
         )}
         <Tab.Screen
@@ -90,11 +92,11 @@ function AppContent() {
           }}
           listeners={({ navigation }) => ({
             tabPress: (e) => {
-              handleAddSpot(); 
+              handleAddSpot();
             }
           })}
         />
-                  <Tab.Screen
+        <Tab.Screen
           name="Cart"
           component={ShoppingCartStack}
           options={{
@@ -104,8 +106,8 @@ function AppContent() {
           }}
           listeners={({ navigation }) => ({
             tabPress: e => {
-            //Piilota AddSpot-nappi, kun käyttäjä siirtyy ostoskoriin
-                handleAddSpot();
+              //Piilota AddSpot-nappi, kun käyttäjä siirtyy ostoskoriin
+              handleAddSpot();
               // Estä välilehden vaihto
               e.preventDefault();
               // Tarkista, onko käyttäjä kirjautunut sisään
@@ -127,11 +129,18 @@ function AppContent() {
                 navigation.navigate("Cart");
               }
             },
-        })}
+          })}
         />
         <Tab.Screen
           name="AddSpot"
           component={AddSpot}
+          options={{
+            tabBarButton: () => null,
+          }}
+        />
+        <Tab.Screen
+          name="ViewProduct"
+          component={ViewProduct}
           options={{
             tabBarButton: () => null,
           }}

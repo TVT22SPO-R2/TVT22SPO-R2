@@ -5,10 +5,11 @@ import { getLocationAsync } from '../components/locationServices';
 import { MaterialIcons } from '@expo/vector-icons';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { firestore, collection, getDocs } from '../firebase/Config';
+import { useNavigation } from '@react-navigation/native';
 
 const MapApiKey = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
 
-const MapScreen = () => {
+const MapScreen = ({ navigation }) => {
   const [userLocation, setUserLocation] = useState(null);
   const [searchedLocation, setSearchedLocation] = useState(null);
   const [currentRegion, setCurrentRegion] = useState(null);
@@ -57,7 +58,7 @@ const MapScreen = () => {
       } catch (error) {
         console.error('Error fetching locations:', error);
       }
-    };  
+    };
 
     fetchLocations();
   }, []);
@@ -75,18 +76,19 @@ const MapScreen = () => {
       return null;
     }
   };
-  
-  const handleMarkerPress = (marker) => {
+
+  const handleMarkerPress = (marker, navigation) => {
     console.log('Marker pressed:', marker);
+    navigation.navigate('ViewProduct', { product: marker });
   };
 
   const handlePlaceSelected = useCallback(async (data) => {
     console.log('Selected Place Data:', data);
-  
+
     try {
       const placeDetails = await fetchPlaceDetails(data.place_id);
       console.log('Place Details:', placeDetails);
-  
+
       if (placeDetails && placeDetails.geometry && placeDetails.geometry.location) {
         const { lat, lng } = placeDetails.geometry.location;
         setSearchedLocation({ latitude: lat, longitude: lng });
@@ -103,7 +105,7 @@ const MapScreen = () => {
       console.error('Error fetching place details:', error);
     }
   }, []);
-  
+
 
   const fetchPlaceDetails = async (placeId) => {
     try {
@@ -117,13 +119,13 @@ const MapScreen = () => {
   };
 
   const handleGPSButtonPress = () => {
-      setCurrentRegion({
-        ...userLocation, 
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      });
-      console.log('User Location:', userLocation);
-    }
+    setCurrentRegion({
+      ...userLocation,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421,
+    });
+    console.log('User Location:', userLocation);
+  }
 
   const toggleSearchVisibility = () => {
     setSearchVisible(!searchVisible);
@@ -181,16 +183,16 @@ const MapScreen = () => {
         style={{ flex: 1 }}
         region={currentRegion}
       >
-      {locations.map((location, index) => (
-        <Marker
-          key={index}
-          coordinate={{ latitude: location.latitude, longitude: location.longitude }}
-          title={location.address || 'Unknown Address'}
-          description={`${location.price}, ${location.description}`}
-          pinColor="green"
-          onPress={() => handleMarkerPress(location)}
-        />
-      ))}
+        {locations.map((location, index) => (
+          <Marker
+            key={index}
+            coordinate={{ latitude: location.latitude, longitude: location.longitude }}
+            title={location.address || 'Unknown Address'}
+            description={`${location.price}, ${location.description}`}
+            pinColor="green"
+            onPress={() => handleMarkerPress(location, navigation)}
+          />
+        ))}
         {searchedLocation && (
           <Marker
             coordinate={{
