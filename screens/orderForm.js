@@ -5,9 +5,15 @@ import { Formik } from 'formik';
 import { theme } from '../components/themeComponent';
 import { firestore, collection, addDoc, getDocs } from '../firebase/Config';
 
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const OrderForm = () => {
+
+  const navigation = useNavigation();
+  const route = useRoute();
+  // Extract totalAmount from route.params
+  const { totalAmount } = route.params;
+  
   // Function to create the "Orders" collection if it doesn't exist
   const createOrdersCollectionIfNeeded = async () => {
     const ordersRef = collection(firestore, 'Orders');
@@ -41,13 +47,13 @@ const OrderForm = () => {
       console.log("Document written with ID: ", docRef.id);
       console.log("Form data sent to Firestore: ", values);
       resetForm();
+       // Navigate to PayPal page with totalAmount
+      navigation.navigate('Paypal page', { totalAmount });
     } catch (error) {
       console.error("Error adding document: ", error);
     }
   };
 
-
-  const navigation = useNavigation(); 
 
   return (
     <KeyboardAvoidingView style={[styles.container, { backgroundColor: theme.colors.tertiary } ]} behavior="padding">
@@ -57,7 +63,6 @@ const OrderForm = () => {
           onSubmit={(values, { resetForm }) => {
             console.log("Values3", values);
             submitFormToFirestore(values, resetForm);
-            navigation.navigate('PaymentPage'); 
           }}
         >
           {({ handleChange, handleBlur, handleSubmit, values }) => (

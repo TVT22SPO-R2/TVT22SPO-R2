@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { theme } from './components/themeComponent';
 
 const App = () => {
+
   return (
     <UserProvider>
       <NavigationContainer theme={theme}>
