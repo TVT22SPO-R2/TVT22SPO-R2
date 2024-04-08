@@ -64,46 +64,52 @@ export default class Paypal extends Component {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${accessToken}`,
     };
-
+    
     axios.post('https://api.sandbox.paypal.com/v1/payments/payment', paymentData, { headers })
-      .then(response => {
-        const { id, links } = response.data;
-        const approvalUrl = links.find(link => link.rel === 'approval_url').href;
-        this.setState({
-          paymentId: id,
-          approvalUrl: approvalUrl
-        });
-      })
-      .catch(error => {
-        console.error('Payment creation error:', error);
+    .then(response => {
+      const { id, links } = response.data;
+      const approvalUrl = links.find(link => link.rel === 'approval_url').href;
+      this.setState({
+        paymentId: id,
+        approvalUrl: approvalUrl
       });
-  };
+    })
+    .catch(error => {
+      console.error('Payment creation error:', error);
+    });
+};
 
-  onNavigationStateChange = (webViewState) => {
-    console.log('Navigated to URL:', webViewState.url);
+onNavigationStateChange = (webViewState) => {
+  console.log('Navigated to URL:', webViewState.url);
 
-    if (webViewState.url.includes("https://example.com/success")) { // Adjust the URL check according to your actual success URL
+  if (webViewState.url.includes("https://example.com/success")) {
       console.log('Success URL reached:', webViewState.url);
       this.setState({ approvalUrl: null });
 
-      // Navigate to the OrderConfirmation screen
+      // Navigate to the OrderConfirmation screen with any relevant data
       this.props.navigation.navigate('OrderConfirmation', {
-        // Optionally pass any relevant data as parameters
-        paymentId: this.state.paymentId,
+          paymentId: this.state.paymentId,
+          // Assuming totalAmount is also relevant for the success scenario
+          totalAmount: this.props.route.params?.totalAmount,
       });
-    }
-    else if (webViewState.url.includes("https://example.com/cancel")) {
+  } else if (webViewState.url.includes("https://example.com/cancel")) {
       console.log('Cancel URL reached:', webViewState.url);
       this.setState({ approvalUrl: null });
-      this.props.navigation.navigate('OrderForm');
-    }
-  };
-  //   onNavigationStateChange = (webViewState) => {
-  //     console.log('webViewState:', webViewState.url);
-  //     if (webViewState.url.includes('https://example.com/cancel')) {
-  //       this.props.onCancelPayment(); // This prop function is to be defined in AppContent
-  //     }
-  //   };
+
+      // When navigating back to OrderForm on cancel, ensure totalAmount is included
+      // This assumes that OrderForm is expecting to receive totalAmount as a parameter
+      this.props.navigation.navigate('OrderForm', {
+          totalAmount: this.props.route.params?.totalAmount,
+      });
+  }
+};
+
+//   onNavigationStateChange = (webViewState) => {
+//     console.log('webViewState:', webViewState.url);
+//     if (webViewState.url.includes('https://example.com/cancel')) {
+//       this.props.onCancelPayment(); // This prop function is to be defined in AppContent
+//     }
+//   };
 
 
   render() {
@@ -113,10 +119,10 @@ export default class Paypal extends Component {
         {approvalUrl ? (
           <WebView
 
-            onError={(syntheticEvent) => {
-              const { nativeEvent } = syntheticEvent;
-              console.error('WebView error:', nativeEvent);
-            }}
+          onError={(syntheticEvent) => {
+            const { nativeEvent } = syntheticEvent;
+            console.error('WebView error:', nativeEvent);
+          }}
 
             style={styles.webView}
             source={{ uri: approvalUrl }}
