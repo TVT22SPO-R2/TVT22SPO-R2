@@ -1,22 +1,45 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { firestore, collection, getDocs } from '../firebase/Config';
 
 /**/
 
 const ItemContainer = ({ items }) => {
+    const [spotsForSale, setSpotsForSale] = useState([]);
 
-    const spotsForSale = [
-        { id: '1', address: '1234 Main St', price: '$100,000', description: 'This is a great spot!' },
-        { id: '2', address: '5678 Elm St', price: '$200,000', description: 'This is a great spot!' },
-        { id: '3', address: '91011 Oak St', price: '$300,000', description: 'This is a great spot!' },
-        { id: '4', address: '121314 Pine St', price: '$400,000', description: 'This is a great spot!' },
-        { id: '5', address: '151617 Maple St', price: '$500,000', description: 'This is a great spot!' },
-        { id: '6', address: '181920 Cedar St', price: '$600,000', description: 'This is a great spot!' },
-        { id: '7', address: '212223 Birch St', price: '$700,000', description: 'This is a great spot!' },
-        { id: '8', address: '242526 Spruce St', price: '$800,000', description: 'This is a great spot!' },
-        { id: '9', address: '272829 Fir St', price: '$900,000', description: 'This is a great spot!' },
-        { id: '10', address: '303132 Pine St', price: '$1,000,000', description: 'This is a great spot!' },
-    ];
+    useEffect(() => {
+        const fetchSpotsForSale = async () => {
+            try {
+                const spotsCollection = collection(firestore, 'Spots');
+                const querySnapshot = await getDocs(spotsCollection);
+                const fetchedSpots = [];
+
+                querySnapshot.forEach((doc) => {
+                    const { address, price, description } = doc.data();
+                    fetchedSpots.push({ address, price, description });
+                });
+                setSpotsForSale(fetchedSpots);
+            } catch (error) {
+                console.error('Error fetching spots for sale:', error);
+            }
+        }
+        fetchSpotsForSale();
+    }, []);
+
+    /* const fetchAddressFromCoords = async (latitude, longitude) => {
+         try {
+             const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${MapApiKey}`);
+             const data = await response.json();
+             if (data.results && data.results.length > 0) {
+                 return data.results[0].formatted_address;
+             }
+             return null;
+         } catch (error) {
+             console.error('Error fetching address:', error);
+             return null;
+         }
+     };*/
+
     const renderItem = ({ item }) => (
 
         <View style={styles.container}>
@@ -59,12 +82,3 @@ const styles = StyleSheet.create({
 });
 
 export default ItemContainer;
-
-
-
-
-
-
-
-
-
