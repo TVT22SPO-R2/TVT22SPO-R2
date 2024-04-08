@@ -1,26 +1,26 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet, Button, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
 import { theme } from '../components/themeComponent';
+import ItemContainer from '../components/spotContainer';
 
 const HomeScreen = () => {
- 
-  const navigation = useNavigation();
 
+  const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
-      <Text style={{ color: theme.colors.text }}>Welcome to the Home Screen!</Text>
+      <Text style={styles.text}>Make money with your parking spot!</Text>
+      <Text styles={styles.text}> Parking spots for rent currently </Text>
+      <ItemContainer />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+  text: {
+    fontSize: 20,
+    color: theme.colors.primary,
   },
 });
 

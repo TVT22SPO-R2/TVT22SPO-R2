@@ -64,24 +64,24 @@ export default class Paypal extends Component {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${accessToken}`,
     };
-    
-    axios.post('https://api.sandbox.paypal.com/v1/payments/payment', paymentData, { headers })
-    .then(response => {
-      const { id, links } = response.data;
-      const approvalUrl = links.find(link => link.rel === 'approval_url').href;
-      this.setState({
-        paymentId: id,
-        approvalUrl: approvalUrl
-      });
-    })
-    .catch(error => {
-      console.error('Payment creation error:', error);
-    });
-};
 
-onNavigationStateChange = (webViewState) => {
+    axios.post('https://api.sandbox.paypal.com/v1/payments/payment', paymentData, { headers })
+      .then(response => {
+        const { id, links } = response.data;
+        const approvalUrl = links.find(link => link.rel === 'approval_url').href;
+        this.setState({
+          paymentId: id,
+          approvalUrl: approvalUrl
+        });
+      })
+      .catch(error => {
+        console.error('Payment creation error:', error);
+      });
+  };
+
+  onNavigationStateChange = (webViewState) => {
     console.log('Navigated to URL:', webViewState.url);
-  
+
     if (webViewState.url.includes("https://example.com/success")) { // Adjust the URL check according to your actual success URL
       console.log('Success URL reached:', webViewState.url);
       this.setState({ approvalUrl: null });
@@ -97,13 +97,13 @@ onNavigationStateChange = (webViewState) => {
       this.setState({ approvalUrl: null });
       this.props.navigation.navigate('OrderForm');
     }
-};
-//   onNavigationStateChange = (webViewState) => {
-//     console.log('webViewState:', webViewState.url);
-//     if (webViewState.url.includes('https://example.com/cancel')) {
-//       this.props.onCancelPayment(); // This prop function is to be defined in AppContent
-//     }
-//   };
+  };
+  //   onNavigationStateChange = (webViewState) => {
+  //     console.log('webViewState:', webViewState.url);
+  //     if (webViewState.url.includes('https://example.com/cancel')) {
+  //       this.props.onCancelPayment(); // This prop function is to be defined in AppContent
+  //     }
+  //   };
 
 
   render() {
@@ -113,10 +113,10 @@ onNavigationStateChange = (webViewState) => {
         {approvalUrl ? (
           <WebView
 
-          onError={(syntheticEvent) => {
-            const { nativeEvent } = syntheticEvent;
-            console.error('WebView error:', nativeEvent);
-          }}
+            onError={(syntheticEvent) => {
+              const { nativeEvent } = syntheticEvent;
+              console.error('WebView error:', nativeEvent);
+            }}
 
             style={styles.webView}
             source={{ uri: approvalUrl }}
