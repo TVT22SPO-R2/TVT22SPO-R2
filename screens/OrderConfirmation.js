@@ -1,20 +1,17 @@
 import React from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
 
-const OrderConfirmation = ({ navigation }) => {
-  // Placeholder data - you might want to replace this with actual data passed from the payment process
-  const orderDetails = {
- 
-    amountPaid: '0.01 USD',
-
-  };
+const OrderConfirmation = ({ route, navigation }) => {
+  // Accessing totalAmount from the route parameters
+  const { totalAmount } = route.params;
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Order Confirmation</Text>
       <Text style={styles.text}>Thank you for your purchase!</Text>
   
-      <Text style={styles.text}>Amount Paid: {orderDetails.amountPaid}</Text>
+      {/* Render totalAmount received from the payment screen */}
+      <Text style={styles.text}>Amount Paid: {totalAmount} USD</Text>
     
       <Button
         title="Go to Home"
@@ -30,6 +27,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  text: {
+    fontSize: 16,
+    marginBottom: 10,
   },
 });
 
