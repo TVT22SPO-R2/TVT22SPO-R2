@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
+import LocationMiniMap from "../components/LocationMiniMap";
 
 
 export default function ViewProduct({ route }) {
@@ -14,7 +15,7 @@ export default function ViewProduct({ route }) {
             <Text style={styles.title}>{product.address}</Text>
             <Text style={styles.price}>{product.price}</Text>
             <Text style={styles.description}>{product.description}</Text>
-
+            <LocationMiniMap coordinates={{ latitude: product.latitude, longitude: product.longitude }} />
         </View>
 
     );
