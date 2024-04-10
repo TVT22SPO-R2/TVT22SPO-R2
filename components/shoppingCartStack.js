@@ -4,8 +4,6 @@ import ShoppingCart from '../screens/shoppingCart';
 import OrderForm from '../screens/orderForm';
 
 import OrderConfirmation from '../screens/OrderConfirmation';
-// import homeScreen from '../screens/homeScreen';
-// import OrderConfirmation from '../screens/OrderConfirmation';
 
 //import PaymentPage from '../screens/paymentPage';
 import Paypal from '../components/PaypalPayment';
