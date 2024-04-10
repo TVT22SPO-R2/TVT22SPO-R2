@@ -15,6 +15,8 @@ import ViewProduct from './screens/viewProduct';
 
 import { Alert } from 'react-native';
 
+import NotesScreen from './screens/NotesScreen';
+
 const Tab = createBottomTabNavigator();
 
 function AppContent() {
@@ -65,6 +67,16 @@ function AppContent() {
               handleAddSpot();
             }
           })} />
+          <Tab.Screen
+          name="Notes"
+          component={NotesScreen}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="notebook" color={color} size={size} />
+            ),
+            tabBarButton: () => null,
+          }}
+        />
         {!user && (
           <Tab.Screen
             name="Login"

@@ -5,6 +5,8 @@ import { auth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from
 import { useUser } from './UserContext'; // Adjust the path as necessary
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation
 
+
+
 export default function Login() {
   const [email, setEmail] = useState('testi@jkjk.com');
   const [password, setPassword] = useState('testitesti');

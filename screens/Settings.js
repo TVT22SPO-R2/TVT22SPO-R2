@@ -2,8 +2,14 @@ import React from "react";
 import { View, Text, Button, StyleSheet } from "react-native";
 import ChangePassword from '../components/ChangePassword'; 
 import { useUser } from '../components/UserContext'; // Käytetään UserContext koukkua
-import { useNavigation } from '@react-navigation/native'; // Import useNavigation
-import { auth } from "../firebase/Config"; // Varmista, että polku firebase-konfiguraatioon on oikein
+import { useNavigation } from '@react-navigation/native'; 
+import { auth, firestore, addDoc, collection, query, where, getDocs, deleteDoc } from '../firebase/Config';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from "react-native";
+import { NotesScreen } from "./NotesScreen";
+
+
+const STORAGE_KEY = '@user_notes';
 
 export default function Settings() {
     const { user, setUser } = useUser(); // Hanki käyttäjän tila ja setUser funktio
@@ -19,13 +25,55 @@ export default function Settings() {
         }
     };
 
+    const deleteUserNotes = async (userId) => {
+        const notesRef = collection(firestore, "user_notes");
+        // Make sure the field name inside where() matches the field name in the documents
+        const q = query(notesRef, where("userId", "==", userId));
+        
+        try {
+          const querySnapshot = await getDocs(q);
+          console.log(`Found ${querySnapshot.docs.length} notes for user ${userId}.`); // For debugging
+      
+          if (querySnapshot.docs.length === 0) {
+            console.log("No notes to delete."); // For debugging
+            return;
+          }
+      
+          const deletePromises = querySnapshot.docs.map((doc) => deleteDoc(doc.ref));
+          await Promise.all(deletePromises);
+          console.log("All user notes have been successfully deleted.");
+        } catch (error) {
+          console.error("Error deleting user notes: ", error);
+        }
+      };
+      
+    const deleteUserAccount = async () => {
+        const user = auth.currentUser;
+        if (user) {
+          try {
+            await deleteUserNotes(user.uid); // Ensure notes are deleted first
+            await user.delete(); // Delete the user account
+            Alert.alert("Account deleted", "Your account and all associated data have been deleted.");
+            // Handle post-account deletion (e.g., navigate to a login screen)
+          } catch (error) {
+            console.error("Error deleting user account:", error);
+            Alert.alert("Error", "Failed to delete account.");
+          }
+        }
+      };
+
     return (
         <View style={styles.container}>
             {user ? (
                 <>
-                    <Text>Welcome back!</Text>
+                    <Text>Signed in as: {user ? user.email : 'Guest'}!</Text>
                     <ChangePassword />
                     <Button title="Sign Out" onPress={handleSignOut} color="red" />
+                    <Button
+                    title="Go to Notes"
+                    onPress={() => navigation.navigate('Notes')}
+                    />
+                    <Button title="Delete Account" onPress={deleteUserAccount} />
                 </>
             ) : (
                 <Text>Please log in, to modify your page</Text>
