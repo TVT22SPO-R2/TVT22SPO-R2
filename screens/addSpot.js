@@ -5,11 +5,11 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 import { firestore, collection, addDoc, updateDoc } from '../firebase/Config';
 import { storage } from '../firebase/Config';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
-
-
+import { auth } from '../firebase/Config';
 
 
 const MapApiKey = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
+
 
 export default function AddSpot() {
   const [firstName, setFirstName] = useState('');
@@ -20,6 +20,8 @@ export default function AddSpot() {
   const [images, setImages] = useState([]);
   const [showInputs, setShowInputs] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+
+  
 
   const getPermissionAsync = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -54,18 +56,19 @@ export default function AddSpot() {
   };
   
   
-  
   console.log("images1:",images);
- 
-  const handleSubmit = async () => {
-    console.log("images2:", images);
-    if (!firstName || !lastName || !price || !description || !location || images.length === 0) {
-      Alert.alert('Missing fields', 'Please fill all the fields and add at least one image.');
-      return;
-    }
   
+    const handleSubmit = async () => {
+      console.log("images2:", images);
+      const user = auth.currentUser; // Get the current logged-in user
+      if (!user) {
+        Alert.alert('Not logged in', 'You must be logged in to submit a spot.');
+        return;
+      }
+
     try {
       const spotRef = await addDoc(collection(firestore, 'Spots'), {
+        userId, // Include the userId in the document
         firstName,
         lastName,
         price: price + '€',
@@ -73,6 +76,7 @@ export default function AddSpot() {
         location,
         createdAt: new Date(),
       });
+      
       console.log('Spot added with ID: ', spotRef.id);
   
       const uploadPromises = images.map(async (imageUri, index) => {
