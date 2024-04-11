@@ -22,7 +22,6 @@ export default function AddSpot() {
   const [searchValue, setSearchValue] = useState('');
 
   
-
   const getPermissionAsync = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
@@ -58,13 +57,17 @@ export default function AddSpot() {
   
   console.log("images1:",images);
   
-    const handleSubmit = async () => {
-      console.log("images2:", images);
-      const user = auth.currentUser; // Get the current logged-in user
-      if (!user) {
-        Alert.alert('Not logged in', 'You must be logged in to submit a spot.');
-        return;
-      }
+  const handleSubmit = async () => {
+    const user = auth.currentUser; // Get the current logged-in user
+    if (!user) {
+      Alert.alert('Not logged in', 'You must be logged in to submit a spot.');
+      return;
+    }
+  
+    if (!firstName || !lastName || !price || !description || !location || images.length === 0) {
+      Alert.alert('Missing fields', 'Please fill all the fields and add at least one image.');
+      return;
+    }
 
     try {
       const spotRef = await addDoc(collection(firestore, 'Spots'), {

@@ -70,8 +70,10 @@ export default function Settings() {
                     const spotsDeletionPromises = spotsSnapshot.docs.map(doc => deleteDoc(doc.ref));
                     await Promise.all(spotsDeletionPromises);
       
-                    // Continue with user deletion logic here
+                    //
+                     // Tähän voi jatkaa muiden käyttäjän tietojen poistamista
                     // ...
+           
                   } catch (error) {
                     console.error("Error deleting user spots:", error);
                     Alert.alert("Error", "Failed to delete user's spots.");
