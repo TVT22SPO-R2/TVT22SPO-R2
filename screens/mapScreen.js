@@ -46,12 +46,12 @@ const MapScreen = ({ navigation }) => {
         const fetchedLocations = [];
 
         for (const doc of querySnapshot.docs) {
-          const { price, description, location } = doc.data();
+          const { price, description, location, images } = doc.data();
           const latitude = location.lat;
           const longitude = location.lng;
 
           const address = await fetchAddressFromCoords(latitude, longitude);
-          fetchedLocations.push({ latitude, longitude, price, description, address });
+          fetchedLocations.push({ latitude, longitude, price, description, address, images });
         }
 
         setLocations(fetchedLocations);
