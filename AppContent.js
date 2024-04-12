@@ -12,7 +12,7 @@ import { theme } from './components/themeComponent';
 import AddSpot from './screens/addSpot';
 import { useUser } from './components/UserContext';
 import ViewProduct from './screens/viewProduct';
-
+import CheckAvailability from './screens/checkAvailability';
 import { Alert } from 'react-native';
 
 import NotesScreen from './screens/NotesScreen';
@@ -67,7 +67,7 @@ function AppContent() {
               handleAddSpot();
             }
           })} />
-          <Tab.Screen
+        <Tab.Screen
           name="Notes"
           component={NotesScreen}
           options={{
@@ -153,6 +153,13 @@ function AppContent() {
         <Tab.Screen
           name="ViewProduct"
           component={ViewProduct}
+          options={{
+            tabBarButton: () => null,
+          }}
+        />
+        <Tab.Screen
+          name="CheckAvailability"
+          component={CheckAvailability}
           options={{
             tabBarButton: () => null,
           }}

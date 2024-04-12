@@ -1,9 +1,15 @@
 import React from "react";
 import { View, Text, ImageBackground, StyleSheet, TouchableOpacity } from "react-native";
 import LocationMiniMap from "../components/LocationMiniMap";
+import { useNavigation } from '@react-navigation/native';
 
-export default function ViewProduct({ route }) {
+export default function ViewProduct({ route, navigation }) {
     const { product } = route.params;
+
+    const handleBooking = () => {
+        navigation.navigate('CheckAvailability')
+    }
+
 
     return (
         <View style={styles.container}>
@@ -15,7 +21,10 @@ export default function ViewProduct({ route }) {
                 </View>
             </ImageBackground>
             <LocationMiniMap coordinates={{ latitude: product.latitude, longitude: product.longitude }} />
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity
+                style={styles.button}
+                onPress={handleBooking}
+            >
                 <Text style={styles.buttonText}>Check availability & book now!</Text>
             </TouchableOpacity>
         </View>
