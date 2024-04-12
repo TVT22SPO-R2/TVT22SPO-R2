@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, ImageBackground, StyleSheet } from "react-native";
+import { View, Text, ImageBackground, StyleSheet, TouchableOpacity } from "react-native";
 import LocationMiniMap from "../components/LocationMiniMap";
 
 export default function ViewProduct({ route }) {
@@ -15,6 +15,9 @@ export default function ViewProduct({ route }) {
                 </View>
             </ImageBackground>
             <LocationMiniMap coordinates={{ latitude: product.latitude, longitude: product.longitude }} />
+            <TouchableOpacity style={styles.button}>
+                <Text style={styles.buttonText}>Check availability & book now!</Text>
+            </TouchableOpacity>
         </View>
     );
 }
@@ -55,5 +58,17 @@ const styles = StyleSheet.create({
     description: {
         fontSize: 18,
         color: '#f9a620',
+    },
+    button: {
+        marginVertical: 10,
+        padding: 10,
+        borderRadius: 5,
+        width: 350,
+        backgroundColor: '#a8d5e2'
+    },
+    buttonText: {
+        color: 'black',
+        textAlign: 'center',
+        fontWeight: 'bold',
     },
 });
