@@ -7,7 +7,7 @@ export default function ViewProduct({ route, navigation }) {
     const { product } = route.params;
 
     const handleBooking = () => {
-        navigation.navigate('CheckAvailability')
+        navigation.navigate('CheckAvailability', { product: product })
     }
 
 
