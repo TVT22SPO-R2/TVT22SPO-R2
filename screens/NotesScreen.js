@@ -22,33 +22,30 @@ const NotesScreen = () => {
       const newItem = {
         text: note,
         createdAt: new Date().toISOString(),
-        userId: user.uid,
-        source: 'firebase' // Set source as 'firebase'
       };
   
       try {
-        const docRef = await addDoc(collection(firestore, "user_notes"), newItem);
-        newItem.id = docRef.id; // Setting the document ID after successful creation
-        setNotes(prevNotes => [...prevNotes, newItem]); // Add the new note to the state
+        const docRef = await addDoc(collection(firestore, "user_notes", user.uid, "notes"), newItem);
+        newItem.id = docRef.id;
+        newItem.source = 'firebase';
+        setNotes(prevNotes => [...prevNotes, newItem]);
         setNote('');
         Alert.alert('Success', 'Note saved to Firebase.');
       } catch (ex) {
         console.error("Error saving note to Firebase:", ex);
         Alert.alert('Error', 'Failed to save note to Firebase.');
       }
-    } else {
-      Alert.alert('Error', 'Unable to save note to Firebase because user information is not available.');
     }
   };
-
+  
   const fetchNotesFromFirestore = async () => {
     const notesArray = [];
     if (user && user.uid) {
-      const querySnapshot = await getDocs(collection(firestore, "user_notes"));
+      const querySnapshot = await getDocs(collection(firestore, "user_notes", user.uid, "notes"));
       querySnapshot.forEach((doc) => {
         const note = doc.data();
         note.id = doc.id;
-        note.source = 'firebase'; // Set source as 'firebase'
+        note.source = 'firebase';
         notesArray.push(note);
       });
       setNotes(notesArray);
@@ -58,21 +55,31 @@ const NotesScreen = () => {
   const deleteNoteFromFirebase = async (noteId) => {
     if (user && user.uid) {
       try {
-        await deleteDoc(doc(firestore, "user_notes", noteId));
+        // Correct path to include user-specific directory
+        const noteRef = doc(firestore, "user_notes", user.uid, "notes", noteId);
+        await deleteDoc(noteRef);
         Alert.alert('Success', 'Note deleted from Firebase.');
       } catch (error) {
         console.error("Error deleting note from Firebase:", error);
         Alert.alert('Error', 'Failed to delete note from Firebase.');
       }
+    } else {
+      Alert.alert('Error', 'User not found, cannot delete note.');
     }
   };
 
   const fetchNotesFromLocalStorage = async () => {
     if (user) {
-      const localNotes = await AsyncStorage.getItem(`${STORAGE_KEY}_${user.uid}`);
-      const parsedNotes = JSON.parse(localNotes) || [];
-      parsedNotes.forEach(note => note.source = 'local'); // Set source as 'local'
-      setNotes(parsedNotes);
+      const userSpecificStorageKey = `${STORAGE_KEY}_${user.uid}`;
+      try {
+        const localNotes = await AsyncStorage.getItem(userSpecificStorageKey);
+        const parsedNotes = JSON.parse(localNotes) || [];
+        parsedNotes.forEach(note => note.source = 'local'); // Set source as 'local'
+        setNotes(parsedNotes);
+      } catch (error) {
+        console.error("Error fetching notes locally:", error);
+        Alert.alert('Error', 'Failed to fetch notes locally.');
+      }
     }
   };
 

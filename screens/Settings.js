@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import ChangePassword from '../components/ChangePassword'; 
 import { useUser } from '../components/UserContext'; // Käytetään UserContext koukkua
-import { useNavigation } from '@react-navigation/native'; 
+import { useNavigation, CommonActions } from '@react-navigation/native'; 
 import { auth, firestore, addDoc, collection, query, where, getDocs, deleteDoc } from '../firebase/Config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from "react-native";
@@ -15,36 +15,33 @@ export default function Settings() {
     const navigation = useNavigation(); // Käytä navigointia kirjautumissivulle siirtymiseen
 
     const handleSignOut = async () => {
-        try {
-            await auth.signOut();
-            setUser(null); // Päivitä konteksti heijastamaan, että käyttäjä on kirjautunut ulos
-            navigation.navigate("Login"); // Valinnaisesti navigoi kirjautumisnäyttöön
-        } catch (error) {
-            console.error("Sign out error:", error);
-        }
-    };
+      try {
+          await auth.signOut();
+          setUser(null); // Update context to reflect that the user has logged out
+  
+          // Reset the navigation stack and navigate to the login screen
+          navigation.dispatch(
+              CommonActions.reset({
+                  index: 0,
+                  routes: [{ name: 'Login' }],
+              })
+          );
+      } catch (error) {
+          console.error("Sign out error:", error);
+      }
+  };
 
     const deleteUserNotes = async (userId) => {
-        const notesRef = collection(firestore, "user_notes");
-        // Make sure the field name inside where() matches the field name in the documents
-        const q = query(notesRef, where("userId", "==", userId));
-        
-        try {
-          const querySnapshot = await getDocs(q);
-          console.log(`Found ${querySnapshot.docs.length} notes for user ${userId}.`); // For debugging
-      
-          if (querySnapshot.docs.length === 0) {
-            console.log("No notes to delete."); // For debugging
-            return;
-          }
-      
-          const deletePromises = querySnapshot.docs.map((doc) => deleteDoc(doc.ref));
-          await Promise.all(deletePromises);
-          console.log("All user notes have been successfully deleted.");
-        } catch (error) {
-          console.error("Error deleting user notes: ", error);
-        }
-      };
+      try {
+        const notesRef = collection(firestore, "user_notes", userId, "notes");
+        const querySnapshot = await getDocs(notesRef);
+        const deletionPromises = querySnapshot.docs.map(doc => deleteDoc(doc.ref));
+        await Promise.all(deletionPromises);
+      } catch (error) {
+        console.error("Error deleting user notes:", error);
+        throw new Error("Failed to delete user's notes.");
+      }
+    };
  
       const deleteUserAccount = () => {
         const user = auth.currentUser;

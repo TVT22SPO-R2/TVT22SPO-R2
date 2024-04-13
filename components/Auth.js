@@ -8,8 +8,11 @@ import { useNavigation } from '@react-navigation/native'; // Import useNavigatio
 
 
 export default function Login() {
-  const [email, setEmail] = useState('testi@jkjk.com');
-  const [password, setPassword] = useState('testitesti');
+    const [email, setEmail] = useState('testi@jkjk.com');
+    const [password, setPassword] = useState('testitesti');
+  // const [email, setEmail] = useState('');
+  // const [password, setPassword] = useState('');
+
   const [error, setError] = useState('');
   const { setUser } = useUser(); // Use the context
 
