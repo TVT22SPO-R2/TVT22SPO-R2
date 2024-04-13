@@ -68,6 +68,8 @@ export default function AddSpot() {
       Alert.alert('Missing fields', 'Please fill all the fields and add at least one image.');
       return;
     }
+  
+    const userId = user.uid;
 
     try {
       const spotRef = await addDoc(collection(firestore, 'Spots'), {
