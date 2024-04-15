@@ -6,6 +6,7 @@ import Login from './components/Auth';
 import HomeScreen from './screens/homeScreen';
 import Settings from './screens/Settings';
 import MapScreen from './screens/mapScreen';
+import SearchScreen from './screens/searchScreen'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import ShoppingCartStack from './components/shoppingCartStack';
 import { theme } from './components/themeComponent';
@@ -108,6 +109,17 @@ function AppContent() {
             }
           })}
         />
+
+        <Tab.Screen
+        name="Search"
+        component={SearchScreen}
+        options={{
+        tabBarIcon: ({ color, size }) => (
+        <MaterialCommunityIcons name="magnify" color={color} size={size} />
+        ),
+        }}
+        />
+
         <Tab.Screen
           name="Cart"
           component={ShoppingCartStack}
