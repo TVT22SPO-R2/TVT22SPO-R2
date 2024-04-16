@@ -56,7 +56,7 @@ const OrderForm = () => {
 
 
   return (
-    <KeyboardAvoidingView style={[styles.container, { backgroundColor: theme.colors.tertiary } ]} behavior="padding">
+    <KeyboardAvoidingView style={[styles.container, { backgroundColor: theme.colors.background } ]} behavior="padding">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
         <Formik
           initialValues={{ firstName: '', lastName: '', address: '', phone: '', email: '' }}
@@ -142,8 +142,9 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   submitButton: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#FFA500',
     marginTop: 20,
+    borderRadius: 10,
   },
   label2: {
     marginBottom: 5,

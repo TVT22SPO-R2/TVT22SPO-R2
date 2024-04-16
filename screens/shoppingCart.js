@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
-import { View, Text, Button, FlatList, StyleSheet } from "react-native";
+import { View, Text, FlatList, StyleSheet, Dimensions } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { Button } from 'react-native-elements';
 
 export default function ShoppingCart() {
     const navigation = useNavigation();
@@ -40,12 +41,13 @@ export default function ShoppingCart() {
         return totalAmount;
     };
 
-    const totalAmount = calculateTotalAmount(updatedProduct);
+    //const totalAmount = calculateTotalAmount(selectedSpots);
+    const totalAmount = 1.00;
 
     console.log("Total Amount:", totalAmount);
 
     const handleContinueToOrder = () => {
-        // Navigate to OrderForm screen with spot information
+        // Navigate to OrderForm screen with totalAmount
         navigation.navigate('OrderForm', { totalAmount });
     };
 
@@ -67,10 +69,13 @@ export default function ShoppingCart() {
                 )}
                 keyExtractor={(item, index) => index.toString()}
             />
-            <Button
-                title="Continue to Order"
-                onPress={handleContinueToOrder}
-            />
+            <View style={styles.submitButtonContainer}>
+                <Button
+                    title="Continue to Order"
+                    onPress={handleContinueToOrder}
+                    buttonStyle={styles.submitButton}
+                />
+            </View>
         </View>
     );
 }

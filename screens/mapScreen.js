@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { getLocationAsync } from '../components/locationServices';
 import { MaterialIcons } from '@expo/vector-icons';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { firestore, collection, getDocs } from '../firebase/Config';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 const MapApiKey = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
 
@@ -38,7 +38,9 @@ const MapScreen = ({ navigation }) => {
     fetchUserLocation();
   }, [currentRegion]);
 
-  useEffect(() => {
+
+  useFocusEffect(
+    useCallback(() => {
     const fetchLocations = async () => {
       try {
         const locationsCollection = collection(firestore, 'Spots');
@@ -63,7 +65,8 @@ const MapScreen = ({ navigation }) => {
     };
 
     fetchLocations();
-  }, []);
+  }, [])
+  );
 
   const fetchAddressFromCoords = async (latitude, longitude) => {
     try {
@@ -120,14 +123,27 @@ const MapScreen = ({ navigation }) => {
     }
   };
 
-  const handleGPSButtonPress = () => {
-    setCurrentRegion({
-      ...userLocation,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
-    });
-    console.log('User Location:', userLocation);
-  }
+  const handleGPSButtonPress = async () => {
+    try {
+      
+      setCurrentRegion(null); //Clear current region to trigger re-render
+  
+      
+      const coordinates = await getLocationAsync(); //Get user location
+  
+      
+      setCurrentRegion({
+        ...coordinates,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });                         //Set current region to user location
+  
+      console.log('User Location:', coordinates);
+    } catch (error) {
+      console.error('Error handling GPS button press:', error);
+    }
+  };
+  
 
   const toggleSearchVisibility = () => {
     setSearchVisible(!searchVisible);
@@ -199,7 +215,7 @@ const MapScreen = ({ navigation }) => {
           <Marker
             coordinate={{
               latitude: searchedLocation.latitude,
-              longitude: searchedLocation.longitude, r
+              longitude: searchedLocation.longitude,
             }}
             title="Searched Location"
             description="Location searched by user"
