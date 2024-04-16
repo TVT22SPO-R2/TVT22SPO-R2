@@ -49,9 +49,11 @@ const MapScreen = ({ navigation }) => {
           const { price, description, location, images } = doc.data();
           const latitude = location.lat;
           const longitude = location.lng;
+          const id = doc.id;
+
 
           const address = await fetchAddressFromCoords(latitude, longitude);
-          fetchedLocations.push({ latitude, longitude, price, description, address, images });
+          fetchedLocations.push({ id, latitude, longitude, price, description, address, images });
         }
 
         setLocations(fetchedLocations);
@@ -197,7 +199,7 @@ const MapScreen = ({ navigation }) => {
           <Marker
             coordinate={{
               latitude: searchedLocation.latitude,
-              longitude: searchedLocation.longitude,r
+              longitude: searchedLocation.longitude, r
             }}
             title="Searched Location"
             description="Location searched by user"

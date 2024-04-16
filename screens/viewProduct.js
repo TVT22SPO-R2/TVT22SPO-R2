@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 export default function ViewProduct({ route, navigation }) {
     const { product } = route.params;
+    console.log('Product:', product);
 
     const handleBooking = () => {
         navigation.navigate('CheckAvailability', { product: product })

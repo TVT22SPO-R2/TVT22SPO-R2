@@ -20,7 +20,7 @@ export default function CheckAvailability() {
         const fetchAvailability = async () => {
             try {
                 console.log('Fetching availability...');
-                const spotDocRef = doc(firestore, 'Spots', '7KaKBpxGhW8nCyfN748S'); // Reference to the document
+                const spotDocRef = doc(firestore, 'Spots', product.id); // Reference to the document
                 const availabilityCollectionRef = collection(spotDocRef, 'availability'); // Reference to the availability collection within the document
                 const querySnapshot = await getDocs(availabilityCollectionRef);
 
