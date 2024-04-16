@@ -40,12 +40,13 @@ export default function ShoppingCart() {
         return totalAmount;
     };
 
-    const totalAmount = calculateTotalAmount(selectedSpots);
+    //const totalAmount = calculateTotalAmount(selectedSpots);
+    const totalAmount = 1.00;
 
     console.log("Total Amount:", totalAmount);
 
     const handleContinueToOrder = () => {
-        // Navigate to OrderForm screen with spot information
+        // Navigate to OrderForm screen with totalAmount
         navigation.navigate('OrderForm', { totalAmount });
     };
 
