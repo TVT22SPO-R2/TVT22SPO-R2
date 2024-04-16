@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, Image, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, Alert, Image, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { useFocusEffect } from '@react-navigation/native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { firestore, collection, addDoc, updateDoc } from '../firebase/Config';
 import { storage } from '../firebase/Config';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { auth } from '../firebase/Config';
-
+import { useNavigation } from '@react-navigation/native';
 
 const MapApiKey = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
-
 
 export default function AddSpot() {
   const [firstName, setFirstName] = useState('');
@@ -20,8 +20,9 @@ export default function AddSpot() {
   const [images, setImages] = useState([]);
   const [showInputs, setShowInputs] = useState(false);
   const [address, setAddress] = useState('');
+  const navigation = useNavigation();
+  const googlePlacesRef = useRef(null);
 
-  
   const getPermissionAsync = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
@@ -36,44 +37,39 @@ export default function AddSpot() {
     if (!hasPermission) {
       return;
     }
-  
+
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 1,
     });
-  
-    console.log('Image Picker Result:', result);
-  
-    // Check if the user canceled the operation or no image selected
+
+    Keyboard.dismiss();
+
     if (result.cancelled || !result.assets) {
-      return; // Do nothing if the user canceled or no image selected
+      return;
     }
-  
-    // If image selection was successful, update the state
+
     setImages(prevImages => [...prevImages, result.assets[0].uri]);
   };
-  
-  
-  console.log("images1:",images);
-  
+
   const handleSubmit = async () => {
-    const user = auth.currentUser; // Get the current logged-in user
+    const user = auth.currentUser;
     if (!user) {
       Alert.alert('Not logged in', 'You must be logged in to submit a spot.');
       return;
     }
-  
+
     if (!firstName || !lastName || !price || !description || !location || !address || images.length === 0) {
       Alert.alert('Missing fields', 'Please fill all the fields and add at least one image.');
       return;
     }
-  
+
     const userId = user.uid;
 
     try {
       const spotRef = await addDoc(collection(firestore, 'Spots'), {
-        userId, // Include the userId in the document
+        userId,
         firstName,
         lastName,
         price: price + '€',
@@ -82,15 +78,10 @@ export default function AddSpot() {
         address,
         createdAt: new Date(),
       });
-      
-      console.log('Spot added with ID: ', spotRef.id);
-  
+
       const uploadPromises = images.map(async (imageUri, index) => {
-        console.log("imageUri:", imageUri);
         try {
-          console.log(`Uploading image ${index + 1} of ${images.length}...`);
           const response = await fetch(imageUri);
-          console.log("response:", response);
           if (!response.ok) {
             throw new Error('Failed to fetch image from URI');
           }
@@ -99,107 +90,123 @@ export default function AddSpot() {
           const fileRef = storageRef(storage, `spots/${spotRef.id}/${fileName}`);
           await uploadBytes(fileRef, blob);
           const downloadUrl = await getDownloadURL(fileRef);
-          console.log(`Image ${index + 1} uploaded successfully`);
           return downloadUrl;
         } catch (error) {
           console.error(`Error uploading image ${index + 1}: `, error);
           throw error;
         }
       });
-  
+
       const imageUrls = await Promise.all(uploadPromises);
-      console.log('Images uploaded to Firebase Storage', imageUrls);
-  
-      // Update Firestore document with image URLs
+
       await updateDoc(spotRef, { images: imageUrls });
-  
+
       Alert.alert('Spot Submitted', 'Your spot has been submitted successfully.');
-      // Reset form state
-      setFirstName('');
-      setLastName('');
-      setPrice('');
-      setDescription('');
-      setLocation(null);
-      setImages([]);
-      setShowInputs(false);
+      resetFormState();
     } catch (error) {
       console.error('Error adding spot or uploading images: ', error);
       Alert.alert('Error', 'There was an error submitting your spot.');
     }
   };
-  
-  
+
   const handlePlaceSelect = (data, details = null) => {
     setLocation(details.geometry.location);
     setAddress(data.description);
     setShowInputs(true);
   };
 
+  const resetFormState = () => {
+    setFirstName('');
+    setLastName('');
+    setPrice('');
+    setDescription('');
+    setLocation(null);
+    setAddress('');
+    setImages([]);
+    setShowInputs(false);
+    googlePlacesRef.current && googlePlacesRef.current.clear();
+  };
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', () => {
+      resetFormState();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      resetFormState();
+    }, [])
+  );
+
   return (
-   <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-    <View style={styles.container}>
-      <Text style={styles.text}>Start by typing the address</Text>
-      <GooglePlacesAutocomplete
-        placeholder="Search"
-        fetchDetails
-        onPress={handlePlaceSelect}
-        query={{
-          key: MapApiKey,
-          language: 'en',
-        }}
-        styles={{
-          textInputContainer: {
-            backgroundColor: 'rgba(0,0,0,0.1)',
-            borderRadius: 20,
-            paddingHorizontal: 10,
-            marginVertical: 10,
-          },
-          textInput: {
-            height: 48,
-            color: '#5d5d5d',
-            fontSize: 16,
-          },
-        }}
-      />
-      {showInputs && (
-        <View style={styles.View}>
-          <TextInput
-            style={styles.input}
-            placeholder="First Name"
-            onChangeText={setFirstName}
-            value={firstName}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Last Name"
-            onChangeText={setLastName}
-            value={lastName}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Price in €"
-            onChangeText={setPrice}
-            value={price}
-            keyboardType="numeric"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Description"
-            onChangeText={setDescription}
-            value={description}
-            multiline
-          />
-          <Button title="Add Photo" onPress={pickImage} />
-          <View style={styles.imageContainer}>
-            {images.map((image, index) => (
-              <Image key={index} source={{ uri: image }} style={styles.thumbnail} /> // Display image as small thumbnail
-            ))}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <KeyboardAvoidingView style={styles.container} behavior="padding">
+        <Text style={styles.text}>Start by typing the address</Text>
+        <GooglePlacesAutocomplete
+          placeholder="Search"
+          ref={googlePlacesRef}
+          fetchDetails
+          onPress={handlePlaceSelect}
+          query={{
+            key: MapApiKey,
+            language: 'en',
+          }}
+          styles={{
+            textInputContainer: {
+              backgroundColor: 'rgba(0,0,0,0.1)',
+              borderRadius: 20,
+              paddingHorizontal: 10,
+              marginVertical: 10,
+            },
+            textInput: {
+              height: 48,
+              color: '#5d5d5d',
+              fontSize: 16,
+            },
+          }}
+        />
+        {showInputs && (
+          <View style={styles.View}>
+            <TextInput
+              style={styles.input}
+              placeholder="First Name"
+              onChangeText={setFirstName}
+              value={firstName}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Last Name"
+              onChangeText={setLastName}
+              value={lastName}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Price in €"
+              onChangeText={setPrice}
+              value={price}
+              keyboardType="numeric"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Description"
+              onChangeText={setDescription}
+              value={description}
+              multiline
+            />
+            <Button title="Add Photo" onPress={pickImage} />
+            <View style={styles.imageContainer}>
+              {images.map((image, index) => (
+                <Image key={index} source={{ uri: image }} style={styles.thumbnail} />
+              ))}
+            </View>
+            <Button title="Submit Spot" onPress={handleSubmit} />
           </View>
-          <Button title="Submit Spot" onPress={handleSubmit} />
-        </View>
-      )}
-    </View>
-   </TouchableWithoutFeedback>
+        )}
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 }
 

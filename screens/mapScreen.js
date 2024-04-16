@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { getLocationAsync } from '../components/locationServices';
 import { MaterialIcons } from '@expo/vector-icons';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { firestore, collection, getDocs } from '../firebase/Config';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 const MapApiKey = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
 
@@ -38,7 +38,9 @@ const MapScreen = ({ navigation }) => {
     fetchUserLocation();
   }, [currentRegion]);
 
-  useEffect(() => {
+
+  useFocusEffect(
+    useCallback(() => {
     const fetchLocations = async () => {
       try {
         const locationsCollection = collection(firestore, 'Spots');
@@ -63,7 +65,8 @@ const MapScreen = ({ navigation }) => {
     };
 
     fetchLocations();
-  }, []);
+  }, [])
+  );
 
   const fetchAddressFromCoords = async (latitude, longitude) => {
     try {
@@ -199,7 +202,7 @@ const MapScreen = ({ navigation }) => {
           <Marker
             coordinate={{
               latitude: searchedLocation.latitude,
-              longitude: searchedLocation.longitude, r
+              longitude: searchedLocation.longitude,
             }}
             title="Searched Location"
             description="Location searched by user"
