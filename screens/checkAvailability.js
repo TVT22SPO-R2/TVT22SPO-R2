@@ -4,6 +4,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { doc, getDoc } from "firebase/firestore";
 import { firestore } from "../firebase/Config";
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { Calendar } from "react-native-calendars";
 
 export default function CheckAvailability() {
     const [availability, setAvailability] = useState([]);
@@ -58,9 +59,12 @@ export default function CheckAvailability() {
             <TouchableOpacity onPress={() => setFetchData(true)}>
                 <Text> Fetch availability of {product.address} </Text>
                 <Text>Rented on:</Text>
-                {availability.map(item => (
-                    <Text key={item.availabilityId}>{item.date}</Text>
-                ))}
+                <Calendar
+                    markedDates={availability.reduce((acc, item) => {
+                        acc[item.date] = { selected: true, marked: true };
+                        return acc;
+                    }, {})}
+                />
             </TouchableOpacity>
         </View>
     )
