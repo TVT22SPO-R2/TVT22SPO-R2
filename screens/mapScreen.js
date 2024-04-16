@@ -123,14 +123,27 @@ const MapScreen = ({ navigation }) => {
     }
   };
 
-  const handleGPSButtonPress = () => {
-    setCurrentRegion({
-      ...userLocation,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
-    });
-    console.log('User Location:', userLocation);
-  }
+  const handleGPSButtonPress = async () => {
+    try {
+      // Reset current region
+      setCurrentRegion(null);
+  
+      // Fetch user location
+      const coordinates = await getLocationAsync();
+  
+      // Set user location to current region
+      setCurrentRegion({
+        ...coordinates,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
+  
+      console.log('User Location:', coordinates);
+    } catch (error) {
+      console.error('Error handling GPS button press:', error);
+    }
+  };
+  
 
   const toggleSearchVisibility = () => {
     setSearchVisible(!searchVisible);
