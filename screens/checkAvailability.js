@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { View, Text, StyleSheet, Button, TouchableOpacity } from "react-native";
 import { collection, getDocs } from "firebase/firestore";
 import { doc, getDoc } from "firebase/firestore";
@@ -9,6 +9,7 @@ import { Calendar } from "react-native-calendars";
 export default function CheckAvailability() {
     const [availability, setAvailability] = useState([]);
     const [fetchData, setFetchData] = useState(false); // State to trigger data fetch
+    const [selectedDates, setSelectedDates] = useState({}); // State to store selected dates
     const navigation = useNavigation();
     const route = useRoute();
     const { product } = route.params;
@@ -52,23 +53,58 @@ export default function CheckAvailability() {
     }, [fetchData]); // useEffect will re-run whenever fetchData state changes
 
 
+    const clearSelectedDates = () => {
+        setSelectedDates({});
+    }
+
+    const clearFetchedDates = () => {
+        setAvailability([]);
+    }
+
+    const handleDayPress = (date) => {
+        setSelectedDates(prevDates => {
+            const updatedDates = { ...prevDates, [date.dateString]: true };
+            console.log('Selected dates:', updatedDates);
+            return updatedDates;
+        });
+    };
+
+    const handleSaveDates = () => {
+        const selectedDatesArray = Object.keys(selectedDates);
+        const updatedProduct = { ...product, selectedDates: selectedDatesArray };
+        // Navigate to the next screen with the updated product prop
+        navigation.navigate('Cart', { updatedProduct });
+        console.log('Selected dates:', selectedDatesArray);
+        console.log('Updated product:', updatedProduct);
+        console.log('Product:', product)
+        console.log('Navigating to Cart screen...');
+    };
+
+    const handleFetchAvailability = () => {
+        clearSelectedDates();
+        clearFetchedDates();
+        setFetchData(true);
+    };
 
     return (
         <View style={styles.container}>
             <Text> Check availability </Text>
-            <TouchableOpacity onPress={() => setFetchData(true)}>
+            <TouchableOpacity onPress={handleFetchAvailability}>
                 <Text> Fetch availability of {product.address} </Text>
-                <Text>Rented on:</Text>
-                <Calendar
-                    markedDates={availability.reduce((acc, item) => {
-                        acc[item.date] = { selected: true, marked: true };
-                        return acc;
-                    }, {})}
-                />
+            </TouchableOpacity>
+            <Text>Rented on:</Text>
+            <Calendar
+                markedDates={availability.reduce((acc, item) => {
+                    acc[item.date] = { selected: true, marked: true };
+                    return acc;
+                }, {})}
+                onDayPress={handleDayPress}
+            />
+            <TouchableOpacity onPress={handleSaveDates}>
+                <Text>Save Dates</Text>
             </TouchableOpacity>
         </View>
     )
-
 }
 
 const styles = StyleSheet.create({
