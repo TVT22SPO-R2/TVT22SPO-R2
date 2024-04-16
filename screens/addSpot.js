@@ -156,13 +156,14 @@ export default function AddSpot() {
           }}
           styles={{
             textInputContainer: {
-              backgroundColor: 'rgba(0,0,0,0.1)',
-              borderRadius: 20,
-              paddingHorizontal: 10,
+              borderWidth: 1,
+              paddingHorizontal: 5,
               marginVertical: 10,
+              width: '99%',
+              marginLeft: 2,
             },
             textInput: {
-              height: 48,
+              height: 40,
               color: '#5d5d5d',
               fontSize: 16,
             },

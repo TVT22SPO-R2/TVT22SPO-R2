@@ -125,18 +125,18 @@ const MapScreen = ({ navigation }) => {
 
   const handleGPSButtonPress = async () => {
     try {
-      // Reset current region
-      setCurrentRegion(null);
+      
+      setCurrentRegion(null); //Clear current region to trigger re-render
   
-      // Fetch user location
-      const coordinates = await getLocationAsync();
+      
+      const coordinates = await getLocationAsync(); //Get user location
   
-      // Set user location to current region
+      
       setCurrentRegion({
         ...coordinates,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
-      });
+      });                         //Set current region to user location
   
       console.log('User Location:', coordinates);
     } catch (error) {
