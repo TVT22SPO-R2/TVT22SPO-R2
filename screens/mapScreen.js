@@ -197,7 +197,7 @@ const MapScreen = ({ navigation }) => {
           <Marker
             coordinate={{
               latitude: searchedLocation.latitude,
-              longitude: searchedLocation.longitude,
+              longitude: searchedLocation.longitude,r
             }}
             title="Searched Location"
             description="Location searched by user"

@@ -19,7 +19,7 @@ export default function AddSpot() {
   const [location, setLocation] = useState(null);
   const [images, setImages] = useState([]);
   const [showInputs, setShowInputs] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
+  const [address, setAddress] = useState('');
 
   
   const getPermissionAsync = async () => {
@@ -64,7 +64,7 @@ export default function AddSpot() {
       return;
     }
   
-    if (!firstName || !lastName || !price || !description || !location || images.length === 0) {
+    if (!firstName || !lastName || !price || !description || !location || !address || images.length === 0) {
       Alert.alert('Missing fields', 'Please fill all the fields and add at least one image.');
       return;
     }
@@ -79,6 +79,7 @@ export default function AddSpot() {
         price: price + '€',
         description,
         location,
+        address,
         createdAt: new Date(),
       });
       
@@ -121,7 +122,6 @@ export default function AddSpot() {
       setLocation(null);
       setImages([]);
       setShowInputs(false);
-      setSearchValue('');
     } catch (error) {
       console.error('Error adding spot or uploading images: ', error);
       Alert.alert('Error', 'There was an error submitting your spot.');
@@ -131,8 +131,8 @@ export default function AddSpot() {
   
   const handlePlaceSelect = (data, details = null) => {
     setLocation(details.geometry.location);
+    setAddress(data.description);
     setShowInputs(true);
-    setSearchValue(data.description);
   };
 
   return (
@@ -159,8 +159,6 @@ export default function AddSpot() {
             fontSize: 16,
           },
         }}
-        value={searchValue}
-        onChangeText={setSearchValue}
       />
       {showInputs && (
         <View style={styles.View}>
