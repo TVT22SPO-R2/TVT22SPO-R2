@@ -125,13 +125,13 @@ function AppContent() {
         />
 
         <Tab.Screen
-        name="Search"
-        component={SearchScreen}
-        options={{
-        tabBarIcon: ({ color, size }) => (
-        <MaterialCommunityIcons name="magnify" color={color} size={size} />
-        ),
-        }}
+          name="Search"
+          component={SearchScreen}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="magnify" color={color} size={size} />
+            ),
+          }}
         />
 
         <Tab.Screen
