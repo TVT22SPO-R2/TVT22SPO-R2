@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, ActivityIndicator, Text, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, ActivityIndicator, Text, TouchableOpacity, Dimensions } from 'react-native';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Login from './components/Auth';
@@ -24,6 +24,20 @@ function AppContent() {
   const { user, setUser, loading } = useUser();
   const navigation = useNavigation();
   const [addSpotVisible, setAddSpotVisible] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('state', () => {
+      const currentRoute = navigation.getCurrentRoute();
+      if (currentRoute.name === 'Home') {
+        setAddSpotVisible(true);
+      } else {
+        setAddSpotVisible(false);
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
 
   if (loading) {
     return (
@@ -198,12 +212,12 @@ const styles = StyleSheet.create({
   },
   floatingButton: {
     position: 'absolute',
-    bottom: 60,
-    right: 20,
+    bottom: Dimensions.get('window').height * 0.1,
+    right: Dimensions.get('window').width * 0.05,
     backgroundColor: 'orange',
     borderRadius: 30,
-    width: 60,
-    height: 60,
+    width: Dimensions.get('window').width * 0.15,
+    height: Dimensions.get('window').width * 0.15,
     justifyContent: 'center',
     alignItems: 'center',
   },

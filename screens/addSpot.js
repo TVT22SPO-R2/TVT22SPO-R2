@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, Image } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert, Image, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { firestore, collection, addDoc, updateDoc } from '../firebase/Config';
@@ -136,6 +136,7 @@ export default function AddSpot() {
   };
 
   return (
+   <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
     <View style={styles.container}>
       <Text style={styles.text}>Start by typing the address</Text>
       <GooglePlacesAutocomplete
@@ -198,6 +199,7 @@ export default function AddSpot() {
         </View>
       )}
     </View>
+   </TouchableWithoutFeedback>
   );
 }
 
