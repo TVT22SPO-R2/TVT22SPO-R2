@@ -60,7 +60,7 @@ function AppContent() {
           tabBarActiveTintColor: theme.colors.text,
         }}
       >
-        <Tab.Screen name="Home" component={HomeScreen}
+        <Tab.Screen name="ParKing" component={HomeScreen}
           options={{
             tabBarIcon: ({ color, size }) => (
               <MaterialCommunityIcons name="home" color={color} size={size} />

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ImageBackground } from 'react-native';
 import { firestore, collection, getDocs } from '../firebase/Config';
 
 /**/
@@ -31,7 +31,9 @@ const ItemContainer = ({ items }) => {
 
         <View style={styles.container}>
             <Text style={styles.title}>{item.address}</Text>
-            <Text style={styles.price}>{item.price}</Text>
+            <ImageBackground source={{ uri: item.images[0] }} style={styles.image}>
+                <Text style={styles.price}>{item.price}</Text>
+            </ImageBackground>
             <Text style={styles.description}>{item.description}</Text>
         </View>
     );
@@ -49,22 +51,31 @@ const ItemContainer = ({ items }) => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        padding: 20,
-        backgroundColor: '#fff',
-        flex: 0.3,
+        padding: 10,
+        backgroundColor: '#a8d5e2',
+        margin: 5,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#ffd449',
+        height: 'auto',
     },
     title: {
         fontSize: 16,
-        marginVertical: 10,
+        width: 120,
+        marginBottom: 5,
     },
     price: {
         fontSize: 14,
         color: '#888',
     },
     description: {
-        fontSize: 16,
-        marginVertical: 10,
+        fontSize: 14,
+    },
+    image: {
+        width: 120,
+        height: 200,
+        borderRadius: 10,
+        overflow: 'hidden',
     },
 });
 

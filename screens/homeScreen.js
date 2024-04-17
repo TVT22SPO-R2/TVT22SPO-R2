@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Button, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { theme } from '../components/themeComponent';
 import ItemContainer from '../components/spotContainer';
 
 const HomeScreen = () => {
@@ -10,17 +9,34 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Make money with your parking spot!</Text>
-      <Text styles={styles.text}> Parking spots for rent currently </Text>
+      <Text style={styles.text}>From empty parking spot to extra income. ParKing turns your parking spot into money!</Text>
+      <Text style={styles.text2}> Parking spots for rent currently </Text>
       <ItemContainer />
+      <Text style={styles.text2}> Park easier, earn smarter. </Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    padding: 20,
+  },
   text: {
     fontSize: 20,
-    color: theme.colors.primary,
+    color: '#f9a620',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  text2: {
+    fontSize: 16,
+    color: '#f9a620',
+    textAlign: 'center',
+    marginTop: 20,
+    marginBottom: 10,
   },
 });
 
