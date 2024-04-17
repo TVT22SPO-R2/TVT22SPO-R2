@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#ffd449',
         height: 'auto',
+        maxWidth: 142,
     },
     title: {
         fontSize: 16,
@@ -70,10 +71,12 @@ const styles = StyleSheet.create({
     },
     description: {
         fontSize: 14,
+        maxWidth: 120, // Set maximum width for the description
+        overflow: 'hidden',
     },
     image: {
         width: 120,
-        height: 200,
+        height: 300,
         borderRadius: 10,
         overflow: 'hidden',
     },

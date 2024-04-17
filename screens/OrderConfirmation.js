@@ -9,13 +9,13 @@ const OrderConfirmation = ({ route, navigation }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Order Confirmation</Text>
       <Text style={styles.text}>Thank you for your purchase!</Text>
-  
+
       {/* Render totalAmount received from the payment screen */}
       <Text style={styles.text}>Amount Paid: {totalAmount} USD</Text>
-    
+
       <Button
         title="Go to Home"
-        onPress={() => navigation.navigate('Home')} // Assuming 'Home' is the name of your home screen in navigation
+        onPress={() => navigation.navigate('ParKing')} // Assuming 'Home' is the name of your home screen in navigation
       />
     </View>
   );
