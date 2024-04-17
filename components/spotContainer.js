@@ -15,8 +15,9 @@ const ItemContainer = ({ items }) => {
                 const fetchedSpots = [];
 
                 querySnapshot.forEach((doc) => {
-                    const { address, price, description } = doc.data();
-                    fetchedSpots.push({ address, price, description });
+                    const { address, price, description, images } = doc.data();
+                    const id = doc.id;
+                    fetchedSpots.push({ id, address, price, description, images });
                 });
                 setSpotsForSale(fetchedSpots);
             } catch (error) {
@@ -25,20 +26,6 @@ const ItemContainer = ({ items }) => {
         }
         fetchSpotsForSale();
     }, []);
-
-    /* const fetchAddressFromCoords = async (latitude, longitude) => {
-         try {
-             const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${MapApiKey}`);
-             const data = await response.json();
-             if (data.results && data.results.length > 0) {
-                 return data.results[0].formatted_address;
-             }
-             return null;
-         } catch (error) {
-             console.error('Error fetching address:', error);
-             return null;
-         }
-     };*/
 
     const renderItem = ({ item }) => (
 
