@@ -88,20 +88,45 @@ export default function CheckAvailability() {
 
     return (
         <View style={styles.container}>
-            <Text> Check availability </Text>
-            <TouchableOpacity onPress={handleFetchAvailability}>
-                <Text> Fetch availability of {product.address} </Text>
+            <TouchableOpacity style={styles.button} onPress={handleFetchAvailability}>
+                <Text style={styles.buttonText}> Check availability of {product.address} </Text>
             </TouchableOpacity>
-            <Text>Rented on:</Text>
+            <Text style={styles.subtitle}>Rented on:</Text>
             <Calendar
-                markedDates={availability.reduce((acc, item) => {
-                    acc[item.date] = { selected: true, marked: true };
-                    return acc;
-                }, {})}
+                markedDates={{
+                    ...availability.reduce((acc, item) => {
+                        acc[item.date] = { selected: true, marked: true, selectedColor: 'orange' };
+                        return acc;
+                    }, {}),
+                    ...Object.keys(selectedDates).reduce((acc, date) => {
+                        acc[date] = { selected: true, marked: true, selectedColor: '#a8d5e2' };
+                        return acc;
+                    }, {})
+                }}
                 onDayPress={handleDayPress}
+                theme={{
+                    calendarBackground: '#ffffff',
+                    textSectionTitleColor: '#b6c1cd',
+                    selectedDayBackgroundColor: '#ff5722',
+                    selectedDayTextColor: '#ffffff',
+                    todayTextColor: '#00adf5',
+                    dayTextColor: '#2d4150',
+                    textDisabledColor: '#d9e1e8',
+                    dotColor: '#00adf5',
+                    selectedDotColor: '#ffffff',
+                    arrowColor: 'orange',
+                    disabledArrowColor: '#d9e1e8',
+                    monthTextColor: 'blue',
+                    indicatorColor: 'blue',
+                    textMonthFontWeight: 'bold',
+                    textDayFontSize: 16,
+                    textMonthFontSize: 16,
+                    textDayHeaderFontSize: 16,
+
+                }}
             />
-            <TouchableOpacity onPress={handleSaveDates}>
-                <Text>Save Dates</Text>
+            <TouchableOpacity style={styles.button} onPress={handleSaveDates}>
+                <Text style={styles.buttonText}>Save Dates</Text>
             </TouchableOpacity>
         </View>
     )
@@ -113,4 +138,26 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    title: {
+        fontSize: 24,
+        marginBottom: 10,
+    },
+    subtitle: {
+        fontSize: 18,
+        marginTop: 10,
+        marginBottom: 10,
+    },
+    button: {
+        backgroundColor: '#fffff0',
+        padding: 10,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#ffd449',
+        marginTop: 10,
+        width: 300,
+    },
+    buttonText: {
+        fontSize: 16,
+        textAlign: 'center',
+    }
 });
