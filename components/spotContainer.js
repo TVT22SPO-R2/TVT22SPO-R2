@@ -52,7 +52,7 @@ const ItemContainer = ({ items }) => {
 const styles = StyleSheet.create({
     container: {
         padding: 10,
-        backgroundColor: '#a8d5e2',
+        backgroundColor: '#fffff0',
         margin: 5,
         borderRadius: 10,
         borderWidth: 1,
