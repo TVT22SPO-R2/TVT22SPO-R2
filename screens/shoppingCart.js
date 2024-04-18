@@ -23,19 +23,19 @@ export default function ShoppingCart() {
     const calculateTotalAmount = (spots) => {
         // If spots is undefined or not an array, return 0
         if (!spots) return 0;
-        
+
         // If spots is a single spot object, convert it to an array
         if (!Array.isArray(spots)) spots = [spots];
-        
+
         console.log("Spots:", spots); // Log spots to check if it's an array and contains the correct data
-        
+
         // Sum up the prices of all spots
         const totalAmount = spots.reduce((total, spot) => {
             const price = convertPriceToNumber(spot.price);
             console.log("Price:", price); // Log each price to check if it's correctly parsed
             return total + price;
         }, 0);
-    
+
         console.log("Total Amount:", totalAmount); // Log the total amount
         return totalAmount;
     };
@@ -69,47 +69,50 @@ export default function ShoppingCart() {
                 keyExtractor={(item, index) => index.toString()}
             />
             <View style={styles.submitButtonContainer}>
-            <Button
-                title="Continue to Order"
-                onPress={handleContinueToOrder}
-                buttonStyle={styles.submitButton}
-            />
+                <Button
+                    title="Continue to Order"
+                    onPress={handleContinueToOrder}
+                    buttonStyle={styles.submitButton}
+                />
             </View>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  spotContainer: {
-    marginBottom: 10,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5
-  },
-  spotText: {
-    fontSize: 16,
-    marginBottom: 5
-  },
-  submitButtonContainer: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    flex: 1
-  },
-  submitButton: {
-    backgroundColor: '#FFA500',
-    width: 200,
-    height: 50,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    spotContainer: {
+        borderRadius: 10,
+        padding: 20,
+        backgroundColor: '#fffff0',
+        maxWidth: 400,
+        width: '90%',
+        borderWidth: 1,
+        borderColor: '#ffd449',
+        marginTop: 20,
+    },
+    spotText: {
+        fontSize: 16,
+        marginBottom: 5,
+    },
+    submitButtonContainer: {
+        paddingHorizontal: 20,
+        paddingBottom: 20,
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        flex: 1
+    },
+    submitButton: {
+        backgroundColor: '#FFA500',
+        width: 200,
+        height: 50,
+        borderRadius: 5,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 });
