@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { StyleSheet, View, ActivityIndicator, Text, TouchableOpacity, Dimensions } from 'react-native';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { NavigationContainer, useNavigation,useFocusEffect, useIsFocused } from '@react-navigation/native';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Login from './components/Auth';
 import HomeScreen from './screens/homeScreen';
@@ -24,20 +24,27 @@ function AppContent() {
   const { user, setUser, loading } = useUser();
   const navigation = useNavigation();
   const [addSpotVisible, setAddSpotVisible] = useState(true);
+  const isHomeFocused = useIsFocused();
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('state', () => {
-      const currentRoute = navigation.getCurrentRoute();
-      if (currentRoute.name === 'Home') {
-        setAddSpotVisible(true);
-      } else {
-        setAddSpotVisible(false);
-      }
-    });
+  
 
-    return unsubscribe;
-  }, [navigation]);
-
+  useFocusEffect(
+    useCallback(() => {
+      console.log("Focus changed");
+      const unsubscribe = navigation.addListener('state', () => {
+        const currentRoute = navigation.getCurrentRoute();
+        console.log("Current route:", currentRoute.name);
+        if (currentRoute.name === 'ParKing') {
+          setAddSpotVisible(true);
+        } else {
+          setAddSpotVisible(false);
+        }
+      });
+  
+      return unsubscribe;
+    }, [navigation])
+  );
+  
 
   if (loading) {
     return (
@@ -46,10 +53,6 @@ function AppContent() {
         <Text>Loading...</Text>
       </View>
     );
-  }
-
-  const handleAddSpot = () => {
-    setAddSpotVisible(false);
   }
 
   return (
@@ -66,11 +69,7 @@ function AppContent() {
               <MaterialCommunityIcons name="home" color={color} size={size} />
             ),
           }}
-          listeners={{
-            tabPress: () => {
-              setAddSpotVisible(true);
-            }
-          }} />
+       />
         <Tab.Screen name="Settings" component={Settings}
           options={{
             tabBarIcon: ({ color, size }) => (
@@ -79,7 +78,6 @@ function AppContent() {
           }}
           listeners={({ navigation }) => ({
             tabPress: (e) => {
-              handleAddSpot();
             }
           })} />
         <Tab.Screen
@@ -104,7 +102,7 @@ function AppContent() {
             }}
             listeners={({ navigation }) => ({
               tabPress: (e) => {
-                handleAddSpot();
+              
               }
             })}
           />
@@ -117,11 +115,6 @@ function AppContent() {
               <MaterialCommunityIcons name="map" color={color} size={size} />
             ),
           }}
-          listeners={({ navigation }) => ({
-            tabPress: (e) => {
-              handleAddSpot();
-            }
-          })}
         />
 
         <Tab.Screen
@@ -144,8 +137,6 @@ function AppContent() {
           }}
           listeners={({ navigation }) => ({
             tabPress: e => {
-              //Piilota AddSpot-nappi, kun käyttäjä siirtyy ostoskoriin
-              handleAddSpot();
               // Estä välilehden vaihto
               e.preventDefault();
               // Tarkista, onko käyttäjä kirjautunut sisään

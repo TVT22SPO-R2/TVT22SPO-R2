@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, Image, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Alert, Image, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useFocusEffect } from '@react-navigation/native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
@@ -8,6 +8,7 @@ import { storage } from '../firebase/Config';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { auth } from '../firebase/Config';
 import { useNavigation } from '@react-navigation/native';
+import { Button } from 'react-native-elements';
 
 const MapApiKey = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
 
@@ -161,6 +162,7 @@ export default function AddSpot() {
               marginVertical: 10,
               width: '99%',
               marginLeft: 2,
+              borderColor: 'orange',
             },
             textInput: {
               height: 40,
@@ -197,13 +199,13 @@ export default function AddSpot() {
               value={description}
               multiline
             />
-            <Button title="Add Photo" onPress={pickImage} />
+            <Button title="Add Photo" onPress={pickImage} buttonStyle={styles.Button} />
             <View style={styles.imageContainer}>
               {images.map((image, index) => (
                 <Image key={index} source={{ uri: image }} style={styles.thumbnail} />
               ))}
             </View>
-            <Button title="Submit Spot" onPress={handleSubmit} />
+            <Button title="Submit Spot" onPress={handleSubmit} buttonStyle={styles.Button} />
           </View>
         )}
       </KeyboardAvoidingView>
@@ -217,6 +219,7 @@ const styles = StyleSheet.create({
     margin: 12,
     borderWidth: 1,
     padding: 10,
+    borderColor: 'orange',
   },
   container: {
     flex: 1,
@@ -228,6 +231,8 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 15,
+    color: 'orange',
+    fontWeight: 'bold',
   },
   imageContainer: {
     flexDirection: 'row',
@@ -239,5 +244,10 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     margin: 5,
+  },
+  Button: {
+    backgroundColor: 'orange',
+    marginTop: 20,
+    borderRadius: 10,
   },
 });
