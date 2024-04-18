@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
   },
   View: {
     flex: 1,
-    marginBottom: 250,
+    marginBottom: 400,
   },
   text: {
     fontSize: 15,

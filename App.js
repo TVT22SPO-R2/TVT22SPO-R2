@@ -6,9 +6,17 @@ import { theme } from './components/themeComponent';
 
 const App = () => {
 
+  const orangeTheme = {
+    ...theme,
+    colors: {
+      ...theme.colors,
+      text: 'orange', 
+    },
+  };
+
   return (
     <UserProvider>
-      <NavigationContainer theme={theme}>
+      <NavigationContainer theme={orangeTheme}>
       <AppContent />
       </NavigationContainer>
     </UserProvider>

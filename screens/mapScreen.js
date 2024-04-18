@@ -154,9 +154,15 @@ const MapScreen = ({ navigation }) => {
     searchRef.current?.setAddressText('');
   };
 
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+    });
+  }, [navigation]);
+
   return (
     <View style={{ flex: 1 }}>
-      <TouchableOpacity style={{ position: 'absolute', top: 5, right: 20, zIndex: 2 }} onPress={toggleSearchVisibility}>
+      <TouchableOpacity style={{ position: 'absolute', top: 35, right: 20, zIndex: 2, backgroundColor: 'orange', borderRadius:8 }} onPress={toggleSearchVisibility}>
         <MaterialIcons name="search" size={24} color="#000" />
       </TouchableOpacity>
       {searchVisible && (
@@ -171,9 +177,10 @@ const MapScreen = ({ navigation }) => {
           styles={{
             container: {
               position: 'absolute',
-              top: 0,
+              top: 30,
               width: '100%',
               zIndex: 1,
+              color: '#000',
             },
             textInputContainer: {
               backgroundColor: 'rgba(0,0,0,0)',
@@ -207,7 +214,7 @@ const MapScreen = ({ navigation }) => {
             coordinate={{ latitude: location.latitude, longitude: location.longitude }}
             title={location.address || 'Unknown Address'}
             description={`${location.price}, ${location.description}`}
-            pinColor="green"
+            pinColor="orange"
             onPress={() => handleMarkerPress(location, navigation)}
           />
         ))}
@@ -234,8 +241,8 @@ const MapScreen = ({ navigation }) => {
           />
         )}
       </MapView>
-      <TouchableOpacity style={{ position: 'absolute', left: 20, bottom: 20 }} onPress={handleGPSButtonPress}>
-        <MaterialIcons name="gps-fixed" size={32} color="#000" />
+      <TouchableOpacity style={{ position: 'absolute', left: 20, bottom: 30, borderRadius: 22, backgroundColor: 'orange', padding: 4}} onPress={handleGPSButtonPress}>
+        <MaterialIcons name="gps-fixed" size={32} color='black'/>
       </TouchableOpacity>
     </View>
   );
