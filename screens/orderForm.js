@@ -13,19 +13,19 @@ const OrderForm = () => {
   const route = useRoute();
   // Extract totalAmount from route.params
   const { totalAmount } = route.params;
-  
+
   // Function to create the "Orders" collection if it doesn't exist
   const createOrdersCollectionIfNeeded = async () => {
     const ordersRef = collection(firestore, 'Orders');
 
     try {
-     
+
       await getDocs(ordersRef);
     } catch (error) {
-     
+
       if (error.code === 'not-found') {
         try {
-         
+
           await addDoc(ordersRef, { dummy: 'data' });
           console.log("Orders collection created successfully");
         } catch (addError) {
@@ -47,7 +47,7 @@ const OrderForm = () => {
       console.log("Document written with ID: ", docRef.id);
       console.log("Form data sent to Firestore: ", values);
       resetForm();
-       // Navigate to PayPal page with totalAmount
+      // Navigate to PayPal page with totalAmount
       navigation.navigate('Paypal page', { totalAmount });
     } catch (error) {
       console.error("Error adding document: ", error);
@@ -56,7 +56,7 @@ const OrderForm = () => {
 
 
   return (
-    <KeyboardAvoidingView style={[styles.container, { backgroundColor: theme.colors.background } ]} behavior="padding">
+    <KeyboardAvoidingView style={[styles.container, { backgroundColor: theme.colors.background }]} behavior="padding">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
         <Formik
           initialValues={{ firstName: '', lastName: '', address: '', phone: '', email: '' }}
@@ -75,6 +75,8 @@ const OrderForm = () => {
                 onBlur={handleBlur('firstName')}
                 value={values.firstName}
                 style={styles.input}
+                underlineColorAndroid="transparent"
+                inputContainerStyle={styles.inputContainer}
               />
               <Text style={styles.label}>Last Name</Text>
               <Input
@@ -83,6 +85,7 @@ const OrderForm = () => {
                 onBlur={handleBlur('lastName')}
                 value={values.lastName}
                 style={styles.input}
+                inputContainerStyle={styles.inputContainer}
               />
               <Text style={styles.label}>Address</Text>
               <Input
@@ -91,6 +94,7 @@ const OrderForm = () => {
                 onBlur={handleBlur('address')}
                 value={values.address}
                 style={styles.input}
+                inputContainerStyle={styles.inputContainer}
               />
               <Text style={styles.label}>Phone Number</Text>
               <Input
@@ -100,6 +104,7 @@ const OrderForm = () => {
                 value={values.phone}
                 keyboardType='phone-pad'
                 style={styles.input}
+                inputContainerStyle={styles.inputContainer}
               />
               <Text style={styles.label}>Email</Text>
               <Input
@@ -109,6 +114,7 @@ const OrderForm = () => {
                 value={values.email}
                 keyboardType='email-address'
                 style={styles.input}
+                inputContainerStyle={styles.inputContainer}
               />
               <Button
                 title="Submit"
@@ -131,16 +137,23 @@ const styles = StyleSheet.create({
   formContainer: {
     paddingHorizontal: 20,
     paddingTop: 20,
-    paddingBottom: 40, 
+    paddingBottom: 40,
   },
   label: {
-    marginBottom: 5,
     fontSize: 16,
     fontWeight: 'bold',
     color: '#FFA500',
   },
   input: {
     marginBottom: 15,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#FFD449',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+  },
+  inputContainer: {
+    borderBottomWidth: 0,
   },
   submitButton: {
     backgroundColor: '#FFA500',

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, FlatList, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, Button, FlatList, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { firestore } from '../firebase/Config';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
@@ -17,39 +17,39 @@ const SearchScreen = () => {
   });
 
   const [searchResults, setSearchResults] = useState([]);
-  const [showAlert, setShowAlert] = useState(false); 
+  const [showAlert, setShowAlert] = useState(false);
   const [selectedSpots, setSelectedSpots] = useState([]);
 
   const handleSearch = async () => {
     setShowAlert(false);
-  
+
     const { address, price, description, name } = searchFilters;
-  
+
     // Array to store all the filter queries
     const filters = [];
-  
+
     // Reset search results
     setSearchResults([]);
-  
+
     try {
       // Address filter
       if (address && address !== searchFilters.prevAddress) {
         const response = await Location.geocodeAsync(address);
         if (response.length > 0) {
           const { latitude, longitude } = response[0];
-  
+
           const latQuery = query(collection(firestore, 'Spots'), where('location.latitude', '==', latitude));
           const lngQuery = query(collection(firestore, 'Spots'), where('location.longitude', '==', longitude));
-  
+
           const [latSnapshot, lngSnapshot] = await Promise.all([getDocs(latQuery), getDocs(lngQuery)]);
-  
+
           const results = [
             ...latSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })),
             ...lngSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
           ];
-  
+
           filters.push(...results);
-  
+
           setSearchFilters(prevState => ({
             ...prevState,
             prevAddress: address // Remember the address for future comparison
@@ -59,7 +59,7 @@ const SearchScreen = () => {
           setShowAlert(true);
         }
       }
-  
+
       // Price filter
       if (price) {
         const priceWithEuroSymbol = parseFloat(price) + '€';
@@ -67,14 +67,14 @@ const SearchScreen = () => {
         const priceSnapshot = await getDocs(priceQuery);
         filters.push(...priceSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
       }
-      
+
       // Description filter
       if (description) {
         const descriptionQuery = query(collection(firestore, 'Spots'), where('description', '==', description));
         const descriptionSnapshot = await getDocs(descriptionQuery);
         filters.push(...descriptionSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
       }
-  
+
       // Name filter
       if (name) {
         const firstNameQuery = query(
@@ -89,10 +89,10 @@ const SearchScreen = () => {
         const combinedResults = [...firstNameSnapshot.docs, ...lastNameSnapshot.docs];
         filters.push(...combinedResults.map(doc => ({ id: doc.id, ...doc.data() })));
       }
-  
+
       // Merge all filter results
       const mergedResults = filters.reduce((acc, cur) => acc.concat(cur), []);
-  
+
       // Perform reverse geocoding for each result
       const addressPromises = mergedResults.map(async result => {
         if (result.location && result.location.latitude) {
@@ -103,7 +103,7 @@ const SearchScreen = () => {
           return result; // Return the result without reverse geocoding if latitude is undefined
         }
       });
-      
+
       const resultsWithAddresses = await Promise.all(addressPromises);
       setSearchResults(resultsWithAddresses);
       setShowAlert(resultsWithAddresses.length === 0);
@@ -127,71 +127,81 @@ const SearchScreen = () => {
   const handleAddToCart = (item) => {
     // Add the selected spot to the list
     setSelectedSpots([...selectedSpots, item]);
-};
+  };
 
   return (
     <View style={styles.container}>
-      <GooglePlacesAutocomplete
-        placeholder='Search by Address'
-        fetchDetails
-        onPress={handlePlaceSelect}
-        query={{
-          key: MapApiKey,
-          language: 'en',
-        }}
-        styles={{
-          textInputContainer: {
-            backgroundColor: '#fff',
-            padding: 10,
-            borderRadius: 20,
-            paddingHorizontal: 10,
-            marginVertical: 10,
-          },
-          textInput: {
-            height: 48,
-            color: '#5d5d5d',
-            fontSize: 16,
-          },
-        }}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Price"
-        onChangeText={text => setSearchFilters({...searchFilters, price: text})}
-        value={searchFilters.price}
-        keyboardType="numeric"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Description"
-        onChangeText={text => setSearchFilters({...searchFilters, description: text})}
-        value={searchFilters.description}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="First and/or Last Name"
-        onChangeText={text => setSearchFilters({...searchFilters, name: text})}
-        value={searchFilters.name}
-      />
-      <Button title="Search" onPress={handleSearch} />
-      {showAlert && (
-        <Text style={styles.alertText}>No spots found with the provided filters</Text>
+      <View style={styles.contentContainerTop}>
+        <GooglePlacesAutocomplete
+          placeholder='Search by Address'
+          fetchDetails
+          onPress={handlePlaceSelect}
+          query={{
+            key: MapApiKey,
+            language: 'en',
+          }}
+          styles={{
+            textInput: {
+              height: 50,
+              marginVertical: 10,
+              borderWidth: 1,
+              padding: 10,
+              borderColor: '#FFD449',
+              backgroundColor: 'white',
+              borderRadius: 10,
+            },
+            textInputContainer: {
+              marginHorizontal: 10,
+            },
+          }}
+        />
+      </View>
+      <View style={styles.contentContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Price"
+          onChangeText={text => setSearchFilters({ ...searchFilters, price: text })}
+          value={searchFilters.price}
+          keyboardType="numeric"
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Description"
+          onChangeText={text => setSearchFilters({ ...searchFilters, description: text })}
+          value={searchFilters.description}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="First and/or Last Name"
+          onChangeText={text => setSearchFilters({ ...searchFilters, name: text })}
+          value={searchFilters.name}
+        />
+        <TouchableOpacity style={[styles.button, { backgroundColor: '#a8d5e2' }]} onPress={handleSearch}>
+          <Text style={styles.buttonText}>Search</Text>
+        </TouchableOpacity>
+        {showAlert && (
+          <Text style={styles.alertText}>No spots found with the provided filters</Text>
+        )}
+      </View>
+      {searchResults.length > 0 && (
+        <View style={styles.contentContainer}>
+          <FlatList
+            data={searchResults}
+            renderItem={({ item }) => {
+              return (
+                <View style={styles.spotContainer}>
+                  <Text style={styles.spotText}>Address: {item.address}</Text>
+                  <Text style={styles.spotText}>Price: {item.price}</Text>
+                  <Text style={styles.spotText}>Description: {item.description}</Text>
+                  <Text style={styles.spotText}>Name: {item.firstName} {item.lastName}</Text>
+                  <AddToCartButton item={item} onPress={handleAddToCart} />
+                </View>
+              );
+            }}
+            keyExtractor={(item, index) => item.id + index.toString()}
+          />
+        </View>
       )}
-      <FlatList
-    data={searchResults}
-    renderItem={({ item }) => {
-        return (
-            <View style={styles.spotContainer}>
-                <Text style={styles.spotText}>Address: {item.address}</Text>
-                <Text style={styles.spotText}>Price: {item.price}</Text>
-                <Text style={styles.spotText}>Description: {item.description}</Text>
-                <Text style={styles.spotText}>Name: {item.firstName} {item.lastName}</Text>
-                <AddToCartButton item={item} onPress={handleAddToCart} /> 
-            </View>
-        );
-    }}
-    keyExtractor={(item, index) => item.id + index.toString()}
-/>
     </View>
   );
 }
@@ -202,26 +212,59 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 20
   },
+  contentContainerTop: {
+    marginBottom: 10,
+    backgroundColor: '#FFFFF0',
+    paddingBottom: 70,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#FFD449',
+
+  },
+  contentContainer: {
+    backgroundColor: '#FFFFF0',
+    padding: 10,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#FFD449',
+    borderRadius: 10,
+  },
   input: {
     height: 50,
     marginVertical: 10,
     borderWidth: 1,
-    padding: 10
+    padding: 10,
+    borderColor: '#FFD449',
+    backgroundColor: 'white',
+    borderRadius: 10
   },
   alertText: {
     color: 'red',
     marginTop: 10
   },
   spotContainer: {
-    marginBottom: 10,
+    backgroundColor: '#FFFFF0',
     padding: 10,
+    marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5
+    borderColor: '#FFD449',
+    borderRadius: 10,
   },
   spotText: {
     fontSize: 16,
     marginBottom: 5
+  },
+  button: {
+    width: '100%',
+    padding: 10,
+    borderWidth: 1,
+    marginTop: 10,
+    borderColor: '#ddd',
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'black',
   },
 });
 

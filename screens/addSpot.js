@@ -156,18 +156,14 @@ export default function AddSpot() {
             language: 'en',
           }}
           styles={{
-            textInputContainer: {
-              borderWidth: 1,
-              paddingHorizontal: 5,
-              marginVertical: 10,
-              width: '99%',
-              marginLeft: 2,
-              borderColor: 'orange',
-            },
             textInput: {
-              height: 40,
-              color: '#5d5d5d',
-              fontSize: 16,
+              height: 50,
+              marginVertical: 10,
+              borderWidth: 1,
+              padding: 10,
+              borderColor: '#FFD449',
+              backgroundColor: 'white',
+              borderRadius: 10,
             },
           }}
         />
@@ -215,15 +211,18 @@ export default function AddSpot() {
 
 const styles = StyleSheet.create({
   input: {
-    height: 40,
-    margin: 12,
+    height: 50,
+    marginVertical: 10,
     borderWidth: 1,
     padding: 10,
-    borderColor: 'orange',
+    borderColor: '#FFD449',
+    backgroundColor: 'white',
+    borderRadius: 10,
   },
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    padding: 20,
   },
   View: {
     flex: 1,
