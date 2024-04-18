@@ -11,7 +11,7 @@ const HomeScreen = () => {
     <View style={styles.container}>
       <Text style={styles.text}>From empty parking spot to extra income. ParKing turns your parking spot into money!</Text>
       <Text style={styles.text2}> Parking spots for rent currently </Text>
-      <ItemContainer />
+      <ItemContainer navigation={navigation} />
       <Text style={styles.text2}> Park easier, earn smarter. </Text>
     </View>
   );

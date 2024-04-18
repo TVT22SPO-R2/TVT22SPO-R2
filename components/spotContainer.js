@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ImageBackground, TouchableOpacity } from 'react-native';
 import { firestore, collection, getDocs } from '../firebase/Config';
+import { useNavigation } from '@react-navigation/native';
 
 /**/
 
-const ItemContainer = ({ items }) => {
+const ItemContainer = ({ items, navigation }) => {
     const [spotsForSale, setSpotsForSale] = useState([]);
 
     useEffect(() => {
@@ -15,11 +16,12 @@ const ItemContainer = ({ items }) => {
                 const fetchedSpots = [];
 
                 querySnapshot.forEach((doc) => {
-                    const { address, price, description, images } = doc.data();
+                    const { address, price, description, images, } = doc.data();
                     const id = doc.id;
                     fetchedSpots.push({ id, address, price, description, images });
                 });
                 setSpotsForSale(fetchedSpots);
+
             } catch (error) {
                 console.error('Error fetching spots for sale:', error);
             }
@@ -27,14 +29,23 @@ const ItemContainer = ({ items }) => {
         fetchSpotsForSale();
     }, []);
 
-    const renderItem = ({ item }) => (
+    const containerPressed = (item) => {
+        navigation.navigate('ViewProduct', { product: item });
+    }
 
+    const renderItem = ({ item }) => (
         <View style={styles.container}>
-            <Text style={styles.title}>{item.address}</Text>
-            <ImageBackground source={{ uri: item.images[0] }} style={styles.image}>
-                <Text style={styles.price}>{item.price}</Text>
-            </ImageBackground>
-            <Text style={styles.description}>{item.description}</Text>
+            <TouchableOpacity onPress={() => containerPressed(item)}>
+                <Text style={styles.title}>{item.address}</Text>
+                {item.images && item.images.length > 0 ? (
+                    <ImageBackground source={{ uri: item.images[0] }} style={styles.image}>
+                        <Text style={styles.price}>{item.price}</Text>
+                    </ImageBackground>
+                ) : (
+                    <View style={styles.placeholderImage} />
+                )}
+                <Text style={styles.description}>{item.description}</Text>
+            </TouchableOpacity>
         </View>
     );
 
