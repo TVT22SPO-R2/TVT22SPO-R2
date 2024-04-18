@@ -16,9 +16,11 @@ const ItemContainer = ({ items, navigation }) => {
                 const fetchedSpots = [];
 
                 querySnapshot.forEach((doc) => {
-                    const { address, price, description, images, } = doc.data();
+                    const { address, price, description, images, location } = doc.data();
                     const id = doc.id;
-                    fetchedSpots.push({ id, address, price, description, images });
+                    const latitude = location.lat;
+                    const longitude = location.lng;
+                    fetchedSpots.push({ latitude, longitude, id, address, price, description, images });
                 });
                 setSpotsForSale(fetchedSpots);
 
