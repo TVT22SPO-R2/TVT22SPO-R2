@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, ImageBackground, StyleSheet, TouchableOpacity } from "react-native";
 import LocationMiniMap from "../components/LocationMiniMap";
 import { useNavigation } from '@react-navigation/native';
+import shared5 from '../assets/shared5.jpg';
 
 export default function ViewProduct({ route, navigation }) {
     const { product } = route.params;
@@ -13,22 +14,24 @@ export default function ViewProduct({ route, navigation }) {
 
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>{product.address}</Text>
-            <ImageBackground source={{ uri: product.images[0] }} style={styles.image}>
-                <View style={styles.overlay}>
-                    <Text style={styles.price}>{product.price}</Text>
-                    <Text style={styles.description}>{product.description}</Text>
-                </View>
-            </ImageBackground>
-            <LocationMiniMap coordinates={{ latitude: product.latitude, longitude: product.longitude }} />
-            <TouchableOpacity
-                style={styles.button}
-                onPress={handleBooking}
-            >
-                <Text style={styles.buttonText}>Check availability & book now!</Text>
-            </TouchableOpacity>
-        </View>
+        <ImageBackground source={shared5} style={{ width: '100%', height: '100%', position: 'absolute' }} >
+            <View style={styles.container}>
+                <Text style={styles.title}>{product.address}</Text>
+                <ImageBackground source={{ uri: product.images[0] }} style={styles.image}>
+                    <View style={styles.overlay}>
+                        <Text style={styles.price}>{product.price}</Text>
+                        <Text style={styles.description}>{product.description}</Text>
+                    </View>
+                </ImageBackground>
+                <LocationMiniMap coordinates={{ latitude: product.latitude, longitude: product.longitude }} />
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={handleBooking}
+                >
+                    <Text style={styles.buttonText}>Check availability & book now!</Text>
+                </TouchableOpacity>
+            </View>
+        </ImageBackground>
     );
 }
 

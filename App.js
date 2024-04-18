@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserProvider } from './components/UserContext'; 
+import { UserProvider } from './components/UserContext';
 import AppContent from './AppContent'; // Import AppContent from its own file
 import { NavigationContainer } from '@react-navigation/native';
 import { theme } from './components/themeComponent';
@@ -10,14 +10,15 @@ const App = () => {
     ...theme,
     colors: {
       ...theme.colors,
-      text: 'orange', 
+      text: 'orange',
     },
   };
 
   return (
+
     <UserProvider>
       <NavigationContainer theme={orangeTheme}>
-      <AppContent />
+        <AppContent />
       </NavigationContainer>
     </UserProvider>
   );

@@ -19,35 +19,44 @@ export default function ShoppingCartStack() {
   console.log("routeparamssi", route.params)
 
   return (
-    <Stack.Navigator initialRouteName="ShoppingCart">
-      <Stack.Screen name="ShoppingCart" component={ShoppingCart} initialParams={{ updatedProduct }}   
-      options={{
-      title: 'Shopping Cart',
-      headerTitleStyle: { color: 'orange' }, 
-    }}  />
-      <Stack.Screen 
-      name="OrderForm" 
-      component={OrderForm}
-      options={{
-        title: 'Order Form',
-        headerTitleStyle: { color: 'orange' },
+    <Stack.Navigator initialRouteName="ShoppingCart"
+      screenOptions={{
+        headerStyle: {
+          height: 100, // Adjust the height as needed
+        },
+        headerLeftContainerStyle: {
+          marginTop: 60, // Adjust the height as needed
+        },
       }}
+    >
+      <Stack.Screen name="ShoppingCart" component={ShoppingCart} initialParams={{ updatedProduct }}
+        options={{
+          title: '',
+          headerTitleStyle: { color: 'orange' },
+        }} />
+      <Stack.Screen
+        name="OrderForm"
+        component={OrderForm}
+        options={{
+          title: '',
+          headerTitleStyle: { color: 'orange' },
+        }}
       />
-      <Stack.Screen 
-      name="Paypal page" 
-      component={Paypal}
-      options={{
-        title: 'Paypal Page',
-        headerTitleStyle: { color: 'orange' },
-      }}
+      <Stack.Screen
+        name="Paypal page"
+        component={Paypal}
+        options={{
+          title: '',
+          headerTitleStyle: { color: 'orange' },
+        }}
       />
-      <Stack.Screen 
-      name="OrderConfirmation" 
-      component={OrderConfirmation} 
-      options={{
-        title: 'Order Confirmation',
-        headerTitleStyle: { color: 'orange' },
-      }}
+      <Stack.Screen
+        name="OrderConfirmation"
+        component={OrderConfirmation}
+        options={{
+          title: '',
+          headerTitleStyle: { color: 'orange' },
+        }}
       />
     </Stack.Navigator>
   );

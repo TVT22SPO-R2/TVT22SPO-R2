@@ -1,9 +1,10 @@
 // auth.js
 import React, { useState } from 'react';
-import { StyleSheet, TextInput, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, TextInput, View, Text, TouchableOpacity, ImageBackground } from 'react-native';
 import { auth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from '../firebase/Config';
 import { useUser } from './UserContext'; // Adjust the path as necessary
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation
+import shared5 from '../assets/shared5.jpg';
 
 
 
@@ -42,32 +43,34 @@ export default function Login() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.contentContainer}>
-        <TextInput
-          placeholder='Email'
-          value={email}
-          onChangeText={setEmail}
-          style={styles.input}
-          keyboardType='email-address'
-          autoCapitalize='none'
-        />
-        <TextInput
-          placeholder='Password'
-          value={password}
-          onChangeText={setPassword}
-          style={styles.input}
-          secureTextEntry
-        />
-        <TouchableOpacity style={[styles.buttonStyle, { backgroundColor: '#a8d5e2' }]} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.buttonStyle, { backgroundColor: '#ffd449' }]} onPress={handleSignUp}>
-          <Text style={styles.buttonText}>Sign Up</Text>
-        </TouchableOpacity>
-        {error ? <Text style={styles.errorText}>{error}</Text> : null}
+    <ImageBackground source={shared5} style={{ width: '100%', height: '100%', position: 'absolute' }} >
+      <View style={styles.container}>
+        <View style={styles.contentContainer}>
+          <TextInput
+            placeholder='Email'
+            value={email}
+            onChangeText={setEmail}
+            style={styles.input}
+            keyboardType='email-address'
+            autoCapitalize='none'
+          />
+          <TextInput
+            placeholder='Password'
+            value={password}
+            onChangeText={setPassword}
+            style={styles.input}
+            secureTextEntry
+          />
+          <TouchableOpacity style={[styles.buttonStyle, { backgroundColor: '#a8d5e2' }]} onPress={handleLogin}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.buttonStyle, { backgroundColor: '#ffd449' }]} onPress={handleSignUp}>
+            <Text style={styles.buttonText}>Sign Up</Text>
+          </TouchableOpacity>
+          {error ? <Text style={styles.errorText}>{error}</Text> : null}
+        </View>
       </View>
-    </View>
+    </ImageBackground>
   );
 }
 
@@ -76,7 +79,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: 'transparent',
   },
   contentContainer: {
     borderRadius: 10,

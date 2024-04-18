@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
-import { View, Text, FlatList, StyleSheet, Dimensions } from "react-native";
+import { View, Text, FlatList, StyleSheet, Dimensions, ImageBackground } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Button } from 'react-native-elements';
+import shared5 from '../assets/shared5.jpg';
 
 export default function ShoppingCart() {
     const navigation = useNavigation();
@@ -51,31 +52,33 @@ export default function ShoppingCart() {
     };
 
     return (
-        <View style={styles.container}>
-            <FlatList
-                data={updatedProduct ? [updatedProduct] : []}
-                renderItem={({ item }) => (
-                    <View style={styles.spotContainer}>
-                        <Text style={styles.spotText}>Address: {item.address}</Text>
-                        <Text style={styles.spotText}>Price: {item.price}</Text>
-                        <Text style={styles.spotText}>Description: {item.description}</Text>
-                        <Text style={styles.spotText}>Name: {item.firstName} {item.lastName}</Text>
-                        <Text style={styles.text}>Selected Dates:</Text>
-                        {item.selectedDates && item.selectedDates.map((date, index) => (
-                            <Text key={index} style={styles.text}>{date}</Text>
-                        ))}
-                    </View>
-                )}
-                keyExtractor={(item, index) => index.toString()}
-            />
-            <View style={styles.submitButtonContainer}>
-                <Button
-                    title="Continue to Order"
-                    onPress={handleContinueToOrder}
-                    buttonStyle={styles.submitButton}
+        <ImageBackground source={shared5} style={{ width: '100%', height: '100%', position: 'absolute' }} >
+            <View style={styles.container}>
+                <FlatList
+                    data={updatedProduct ? [updatedProduct] : []}
+                    renderItem={({ item }) => (
+                        <View style={styles.spotContainer}>
+                            <Text style={styles.spotText}>Address: {item.address}</Text>
+                            <Text style={styles.spotText}>Price: {item.price}</Text>
+                            <Text style={styles.spotText}>Description: {item.description}</Text>
+                            <Text style={styles.spotText}>Name: {item.firstName} {item.lastName}</Text>
+                            <Text style={styles.text}>Selected Dates:</Text>
+                            {item.selectedDates && item.selectedDates.map((date, index) => (
+                                <Text key={index} style={styles.text}>{date}</Text>
+                            ))}
+                        </View>
+                    )}
+                    keyExtractor={(item, index) => index.toString()}
                 />
+                <View style={styles.submitButtonContainer}>
+                    <Button
+                        title="Continue to Order"
+                        onPress={handleContinueToOrder}
+                        buttonStyle={styles.submitButton}
+                    />
+                </View>
             </View>
-        </View>
+        </ImageBackground>
     );
 }
 
@@ -83,7 +86,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        paddingTop: 100,
+        paddingHorizontal: 25
     },
     spotContainer: {
         borderRadius: 10,

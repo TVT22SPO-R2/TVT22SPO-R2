@@ -6,6 +6,8 @@ import { useNavigation, CommonActions } from '@react-navigation/native';
 import { auth, firestore, addDoc, collection, query, where, getDocs, deleteDoc } from '../firebase/Config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from "react-native";
+import { ImageBackground } from 'react-native';
+import shared5 from '../assets/shared5.jpg';
 
 
 const STORAGE_KEY = '@user_notes';
@@ -108,27 +110,29 @@ export default function Settings() {
     }
   };
   return (
-    <View style={styles.container}>
-      <ChangePassword />
-      <View style={styles.contentContainer}>
-        {user ? (
-          <>
-            <Text style={styles.userInfoText}>Signed in as: {user ? user.email : 'Guest'}!</Text>
-            <TouchableOpacity style={[styles.button, { backgroundColor: '#a8d5e2' }]} onPress={() => navigation.navigate('Notes')}>
-              <Text style={styles.buttonText}>Go to Notes</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, { backgroundColor: '#ffd449' }]} onPress={handleSignOut}>
-              <Text style={styles.buttonText}>Sign Out</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, { backgroundColor: '#ffd449' }]} onPress={deleteUserAccount}>
-              <Text style={styles.buttonText}>Delete Account</Text>
-            </TouchableOpacity>
-          </>
-        ) : (
-          <Text style={styles.userInfoText}>Please log in to modify your page</Text>
-        )}
+    <ImageBackground source={shared5} style={{ width: '100%', height: '100%', position: 'absolute' }} >
+      <View style={styles.container}>
+        <ChangePassword />
+        <View style={styles.contentContainer}>
+          {user ? (
+            <>
+              <Text style={styles.userInfoText}>Signed in as: {user ? user.email : 'Guest'}!</Text>
+              <TouchableOpacity style={[styles.button, { backgroundColor: '#a8d5e2' }]} onPress={() => navigation.navigate('Notes')}>
+                <Text style={styles.buttonText}>Go to Notes</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.button, { backgroundColor: '#ffd449' }]} onPress={handleSignOut}>
+                <Text style={styles.buttonText}>Sign Out</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.button, { backgroundColor: '#ffd449' }]} onPress={deleteUserAccount}>
+                <Text style={styles.buttonText}>Delete Account</Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <Text style={styles.userInfoText}>Please log in to modify your page</Text>
+          )}
+        </View>
       </View>
-    </View>
+    </ImageBackground>
   );
 }
 
@@ -137,7 +141,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: 'transparent',
   },
   contentContainer: {
     borderRadius: 10,

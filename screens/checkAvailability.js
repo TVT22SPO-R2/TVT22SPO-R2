@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { View, Text, StyleSheet, Button, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, Button, TouchableOpacity, ImageBackground } from "react-native";
 import { collection, getDocs } from "firebase/firestore";
 import { doc, getDoc } from "firebase/firestore";
 import { firestore } from "../firebase/Config";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Calendar } from "react-native-calendars";
+import shared5 from '../assets/shared5.jpg';
 
 export default function CheckAvailability() {
     const [availability, setAvailability] = useState([]);
@@ -84,48 +85,50 @@ export default function CheckAvailability() {
     };
 
     return (
-        <View style={styles.container}>
-            <TouchableOpacity style={styles.button} onPress={handleFetchAvailability}>
-                <Text style={styles.buttonText}> Check availability of {product.address} </Text>
-            </TouchableOpacity>
-            <Text style={styles.subtitle}>Rented on:</Text>
-            <Calendar
-                markedDates={{
-                    ...availability.reduce((acc, item) => {
-                        acc[item.date] = { selected: true, marked: true, selectedColor: 'orange' };
-                        return acc;
-                    }, {}),
-                    ...Object.keys(selectedDates).reduce((acc, date) => {
-                        acc[date] = { selected: true, marked: true, selectedColor: '#a8d5e2' };
-                        return acc;
-                    }, {})
-                }}
-                onDayPress={handleDayPress}
-                theme={{
-                    calendarBackground: '#ffffff',
-                    textSectionTitleColor: '#b6c1cd',
-                    selectedDayBackgroundColor: '#ff5722',
-                    selectedDayTextColor: '#ffffff',
-                    todayTextColor: '#00adf5',
-                    dayTextColor: '#2d4150',
-                    textDisabledColor: '#d9e1e8',
-                    dotColor: '#00adf5',
-                    selectedDotColor: '#ffffff',
-                    arrowColor: 'orange',
-                    disabledArrowColor: '#d9e1e8',
-                    monthTextColor: 'blue',
-                    indicatorColor: 'blue',
-                    textMonthFontWeight: 'bold',
-                    textDayFontSize: 16,
-                    textMonthFontSize: 16,
-                    textDayHeaderFontSize: 16,
+        <ImageBackground source={shared5} style={{ flex: 1, resizeMode: "cover", justifyContent: "center" }}>
+            <View style={styles.container}>
+                <TouchableOpacity style={styles.button} onPress={handleFetchAvailability}>
+                    <Text style={styles.buttonText}> Check availability of {product.address} </Text>
+                </TouchableOpacity>
+                <Text style={styles.subtitle}>Rented on:</Text>
+                <Calendar
+                    markedDates={{
+                        ...availability.reduce((acc, item) => {
+                            acc[item.date] = { selected: true, marked: true, selectedColor: 'orange' };
+                            return acc;
+                        }, {}),
+                        ...Object.keys(selectedDates).reduce((acc, date) => {
+                            acc[date] = { selected: true, marked: true, selectedColor: '#a8d5e2' };
+                            return acc;
+                        }, {})
+                    }}
+                    onDayPress={handleDayPress}
+                    theme={{
+                        calendarBackground: '#ffffff',
+                        textSectionTitleColor: '#b6c1cd',
+                        selectedDayBackgroundColor: '#ff5722',
+                        selectedDayTextColor: '#ffffff',
+                        todayTextColor: '#00adf5',
+                        dayTextColor: '#2d4150',
+                        textDisabledColor: '#d9e1e8',
+                        dotColor: '#00adf5',
+                        selectedDotColor: '#ffffff',
+                        arrowColor: 'orange',
+                        disabledArrowColor: '#d9e1e8',
+                        monthTextColor: 'blue',
+                        indicatorColor: 'blue',
+                        textMonthFontWeight: 'bold',
+                        textDayFontSize: 16,
+                        textMonthFontSize: 16,
+                        textDayHeaderFontSize: 16,
 
-                }}
-            />
-            <TouchableOpacity style={styles.button} onPress={handleSaveDates}>
-                <Text style={styles.buttonText}>Save Dates</Text>
-            </TouchableOpacity>
-        </View>
+                    }}
+                />
+                <TouchableOpacity style={styles.button} onPress={handleSaveDates}>
+                    <Text style={styles.buttonText}>Save Dates</Text>
+                </TouchableOpacity>
+            </View>
+        </ImageBackground>
     )
 }
 

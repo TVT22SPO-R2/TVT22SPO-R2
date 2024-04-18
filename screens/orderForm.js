@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, ImageBackground } from 'react-native';
 import { Input, Button } from 'react-native-elements';
 import { Formik } from 'formik';
 import { theme } from '../components/themeComponent';
 import { firestore, collection, addDoc, getDocs } from '../firebase/Config';
-
+import shared5 from '../assets/shared5.jpg';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 const OrderForm = () => {
@@ -56,83 +56,86 @@ const OrderForm = () => {
 
 
   return (
-    <KeyboardAvoidingView style={[styles.container, { backgroundColor: theme.colors.background }]} behavior="padding">
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
-        <Formik
-          initialValues={{ firstName: '', lastName: '', address: '', phone: '', email: '' }}
-          onSubmit={(values, { resetForm }) => {
-            console.log("Values3", values);
-            submitFormToFirestore(values, resetForm);
-          }}
-        >
-          {({ handleChange, handleBlur, handleSubmit, values }) => (
-            <View style={styles.formContainer}>
-              <Text style={styles.label2}>Please enter your details</Text>
-              <Text style={styles.label}>First Name</Text>
-              <Input
-                placeholder="Enter your first name"
-                onChangeText={handleChange('firstName')}
-                onBlur={handleBlur('firstName')}
-                value={values.firstName}
-                style={styles.input}
-                underlineColorAndroid="transparent"
-                inputContainerStyle={styles.inputContainer}
-              />
-              <Text style={styles.label}>Last Name</Text>
-              <Input
-                placeholder="Enter your last name"
-                onChangeText={handleChange('lastName')}
-                onBlur={handleBlur('lastName')}
-                value={values.lastName}
-                style={styles.input}
-                inputContainerStyle={styles.inputContainer}
-              />
-              <Text style={styles.label}>Address</Text>
-              <Input
-                placeholder="Enter your address"
-                onChangeText={handleChange('address')}
-                onBlur={handleBlur('address')}
-                value={values.address}
-                style={styles.input}
-                inputContainerStyle={styles.inputContainer}
-              />
-              <Text style={styles.label}>Phone Number</Text>
-              <Input
-                placeholder="Enter your phone number"
-                onChangeText={handleChange('phone')}
-                onBlur={handleBlur('phone')}
-                value={values.phone}
-                keyboardType='phone-pad'
-                style={styles.input}
-                inputContainerStyle={styles.inputContainer}
-              />
-              <Text style={styles.label}>Email</Text>
-              <Input
-                placeholder="Enter your email"
-                onChangeText={handleChange('email')}
-                onBlur={handleBlur('email')}
-                value={values.email}
-                keyboardType='email-address'
-                style={styles.input}
-                inputContainerStyle={styles.inputContainer}
-              />
-              <Button
-                title="Submit"
-                onPress={handleSubmit}
-                buttonStyle={styles.submitButton}
-              />
-            </View>
-          )}
-        </Formik>
-      </ScrollView>
-    </KeyboardAvoidingView>
+    <ImageBackground source={shared5} style={{ width: '100%', height: '100%', position: 'absolute' }} >
+      <KeyboardAvoidingView style={[styles.container]} behavior="padding">
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
+          <Formik
+            initialValues={{ firstName: '', lastName: '', address: '', phone: '', email: '' }}
+            onSubmit={(values, { resetForm }) => {
+              console.log("Values3", values);
+              submitFormToFirestore(values, resetForm);
+            }}
+          >
+            {({ handleChange, handleBlur, handleSubmit, values }) => (
+              <View style={styles.formContainer}>
+                <Text style={styles.label2}>Please enter your details</Text>
+                <Text style={styles.label}>First Name</Text>
+                <Input
+                  placeholder="Enter your first name"
+                  onChangeText={handleChange('firstName')}
+                  onBlur={handleBlur('firstName')}
+                  value={values.firstName}
+                  style={styles.input}
+                  underlineColorAndroid="transparent"
+                  inputContainerStyle={styles.inputContainer}
+                />
+                <Text style={styles.label}>Last Name</Text>
+                <Input
+                  placeholder="Enter your last name"
+                  onChangeText={handleChange('lastName')}
+                  onBlur={handleBlur('lastName')}
+                  value={values.lastName}
+                  style={styles.input}
+                  inputContainerStyle={styles.inputContainer}
+                />
+                <Text style={styles.label}>Address</Text>
+                <Input
+                  placeholder="Enter your address"
+                  onChangeText={handleChange('address')}
+                  onBlur={handleBlur('address')}
+                  value={values.address}
+                  style={styles.input}
+                  inputContainerStyle={styles.inputContainer}
+                />
+                <Text style={styles.label}>Phone Number</Text>
+                <Input
+                  placeholder="Enter your phone number"
+                  onChangeText={handleChange('phone')}
+                  onBlur={handleBlur('phone')}
+                  value={values.phone}
+                  keyboardType='phone-pad'
+                  style={styles.input}
+                  inputContainerStyle={styles.inputContainer}
+                />
+                <Text style={styles.label}>Email</Text>
+                <Input
+                  placeholder="Enter your email"
+                  onChangeText={handleChange('email')}
+                  onBlur={handleBlur('email')}
+                  value={values.email}
+                  keyboardType='email-address'
+                  style={styles.input}
+                  inputContainerStyle={styles.inputContainer}
+                />
+                <Button
+                  title="Submit"
+                  onPress={handleSubmit}
+                  buttonStyle={styles.submitButton}
+                />
+              </View>
+            )}
+          </Formik>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
+    paddingTop: 80
   },
   formContainer: {
     paddingHorizontal: 20,
@@ -151,13 +154,13 @@ const styles = StyleSheet.create({
     borderColor: '#FFD449',
     paddingHorizontal: 10,
     paddingVertical: 10,
+    backgroundColor: 'white',
   },
   inputContainer: {
     borderBottomWidth: 0,
   },
   submitButton: {
     backgroundColor: '#FFA500',
-    marginTop: 20,
     borderRadius: 10,
   },
   label2: {

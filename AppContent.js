@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { StyleSheet, View, ActivityIndicator, Text, TouchableOpacity, Dimensions } from 'react-native';
-import { NavigationContainer, useNavigation,useFocusEffect, useIsFocused } from '@react-navigation/native';
+import { StyleSheet, View, ActivityIndicator, Text, TouchableOpacity, Dimensions, StatusBar } from 'react-native';
+import { NavigationContainer, useNavigation, useFocusEffect, useIsFocused } from '@react-navigation/native';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Login from './components/Auth';
 import HomeScreen from './screens/homeScreen';
@@ -26,7 +26,7 @@ function AppContent() {
   const [addSpotVisible, setAddSpotVisible] = useState(true);
   const isHomeFocused = useIsFocused();
 
-  
+
 
   useFocusEffect(
     useCallback(() => {
@@ -40,11 +40,11 @@ function AppContent() {
           setAddSpotVisible(false);
         }
       });
-  
+
       return unsubscribe;
     }, [navigation])
   );
-  
+
 
   if (loading) {
     return (
@@ -61,6 +61,9 @@ function AppContent() {
         screenOptions={{
           tabBarStyle: { backgroundColor: theme.colors.primary },
           tabBarActiveTintColor: theme.colors.text,
+          headerStyle: { backgroundColor: 'transparent' }, // Set the header background color to transparent
+          headerTransparent: true, // Make the header transparent
+
         }}
       >
         <Tab.Screen name="ParKing" component={HomeScreen}
@@ -69,7 +72,7 @@ function AppContent() {
               <MaterialCommunityIcons name="home" color={color} size={size} />
             ),
           }}
-       />
+        />
         <Tab.Screen name="Settings" component={Settings}
           options={{
             tabBarIcon: ({ color, size }) => (
@@ -102,7 +105,7 @@ function AppContent() {
             }}
             listeners={({ navigation }) => ({
               tabPress: (e) => {
-              
+
               }
             })}
           />

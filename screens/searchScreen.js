@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, FlatList, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, FlatList, StyleSheet, Alert, TouchableOpacity, ImageBackground } from 'react-native';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { firestore } from '../firebase/Config';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import * as Location from 'expo-location';
 import AddToCartButton from '../components/addToCartButton';
+import shared5 from '../assets/shared5.jpg';
 
 const MapApiKey = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
 
@@ -130,87 +131,90 @@ const SearchScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.contentContainerTop}>
-        <GooglePlacesAutocomplete
-          placeholder='Search by Address'
-          fetchDetails
-          onPress={handlePlaceSelect}
-          query={{
-            key: MapApiKey,
-            language: 'en',
-          }}
-          styles={{
-            textInput: {
-              height: 50,
-              marginVertical: 10,
-              borderWidth: 1,
-              padding: 10,
-              borderColor: '#FFD449',
-              backgroundColor: 'white',
-              borderRadius: 10,
-            },
-            textInputContainer: {
-              marginHorizontal: 10,
-            },
-          }}
-        />
-      </View>
-      <View style={styles.contentContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Price"
-          onChangeText={text => setSearchFilters({ ...searchFilters, price: text })}
-          value={searchFilters.price}
-          keyboardType="numeric"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Description"
-          onChangeText={text => setSearchFilters({ ...searchFilters, description: text })}
-          value={searchFilters.description}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="First and/or Last Name"
-          onChangeText={text => setSearchFilters({ ...searchFilters, name: text })}
-          value={searchFilters.name}
-        />
-        <TouchableOpacity style={[styles.button, { backgroundColor: '#a8d5e2' }]} onPress={handleSearch}>
-          <Text style={styles.buttonText}>Search</Text>
-        </TouchableOpacity>
-        {showAlert && (
-          <Text style={styles.alertText}>No spots found with the provided filters</Text>
-        )}
-      </View>
-      {searchResults.length > 0 && (
-        <View style={styles.contentContainer}>
-          <FlatList
-            data={searchResults}
-            renderItem={({ item }) => {
-              return (
-                <View style={styles.spotContainer}>
-                  <Text style={styles.spotText}>Address: {item.address}</Text>
-                  <Text style={styles.spotText}>Price: {item.price}</Text>
-                  <Text style={styles.spotText}>Description: {item.description}</Text>
-                  <Text style={styles.spotText}>Name: {item.firstName} {item.lastName}</Text>
-                  <AddToCartButton item={item} onPress={handleAddToCart} />
-                </View>
-              );
+    <ImageBackground source={shared5} style={{ flex: 1, resizeMode: 'cover', justifyContent: 'center' }}>
+      <View style={styles.container}>
+        <View style={styles.contentContainerTop}>
+          <GooglePlacesAutocomplete
+            placeholder='Search by Address'
+            fetchDetails
+            onPress={handlePlaceSelect}
+            query={{
+              key: MapApiKey,
+              language: 'en',
             }}
-            keyExtractor={(item, index) => item.id + index.toString()}
+            styles={{
+              textInput: {
+                height: 50,
+                marginVertical: 10,
+                borderWidth: 1,
+                padding: 10,
+                borderColor: '#FFD449',
+                backgroundColor: 'white',
+                borderRadius: 10,
+              },
+              textInputContainer: {
+                marginHorizontal: 10,
+              },
+            }}
           />
         </View>
-      )}
-    </View>
+        <View style={styles.contentContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Price"
+            onChangeText={text => setSearchFilters({ ...searchFilters, price: text })}
+            value={searchFilters.price}
+            keyboardType="numeric"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Description"
+            onChangeText={text => setSearchFilters({ ...searchFilters, description: text })}
+            value={searchFilters.description}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="First and/or Last Name"
+            onChangeText={text => setSearchFilters({ ...searchFilters, name: text })}
+            value={searchFilters.name}
+          />
+          <TouchableOpacity style={[styles.button, { backgroundColor: '#a8d5e2' }]} onPress={handleSearch}>
+            <Text style={styles.buttonText}>Search</Text>
+          </TouchableOpacity>
+          {showAlert && (
+            <Text style={styles.alertText}>No spots found with the provided filters</Text>
+          )}
+        </View>
+        {searchResults.length > 0 && (
+          <View style={styles.contentContainer}>
+            <FlatList
+              data={searchResults}
+              renderItem={({ item }) => {
+                return (
+                  <View style={styles.spotContainer}>
+                    <Text style={styles.spotText}>Address: {item.address}</Text>
+                    <Text style={styles.spotText}>Price: {item.price}</Text>
+                    <Text style={styles.spotText}>Description: {item.description}</Text>
+                    <Text style={styles.spotText}>Name: {item.firstName} {item.lastName}</Text>
+                    <AddToCartButton item={item} onPress={handleAddToCart} />
+                  </View>
+                );
+              }}
+              keyExtractor={(item, index) => item.id + index.toString()}
+            />
+          </View>
+        )}
+      </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    padding: 20
+    backgroundColor: 'transparent',
+    padding: 20,
+    paddingTop: 100
   },
   contentContainerTop: {
     marginBottom: 10,

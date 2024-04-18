@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert, Image, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Alert, Image, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, ImageBackground } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useFocusEffect } from '@react-navigation/native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
@@ -9,6 +9,7 @@ import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage
 import { auth } from '../firebase/Config';
 import { useNavigation } from '@react-navigation/native';
 import { Button } from 'react-native-elements';
+import shared5 from '../assets/shared5.jpg';
 
 const MapApiKey = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
 
@@ -143,69 +144,71 @@ export default function AddSpot() {
   );
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <KeyboardAvoidingView style={styles.container} behavior="padding">
-        <Text style={styles.text}>Start by typing the address</Text>
-        <GooglePlacesAutocomplete
-          placeholder="Search"
-          ref={googlePlacesRef}
-          fetchDetails
-          onPress={handlePlaceSelect}
-          query={{
-            key: MapApiKey,
-            language: 'en',
-          }}
-          styles={{
-            textInput: {
-              height: 50,
-              marginVertical: 10,
-              borderWidth: 1,
-              padding: 10,
-              borderColor: '#FFD449',
-              backgroundColor: 'white',
-              borderRadius: 10,
-            },
-          }}
-        />
-        {showInputs && (
-          <View style={styles.View}>
-            <TextInput
-              style={styles.input}
-              placeholder="First Name"
-              onChangeText={setFirstName}
-              value={firstName}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Last Name"
-              onChangeText={setLastName}
-              value={lastName}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Price in €"
-              onChangeText={setPrice}
-              value={price}
-              keyboardType="numeric"
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Description"
-              onChangeText={setDescription}
-              value={description}
-              multiline
-            />
-            <Button title="Add Photo" onPress={pickImage} buttonStyle={styles.Button} />
-            <View style={styles.imageContainer}>
-              {images.map((image, index) => (
-                <Image key={index} source={{ uri: image }} style={styles.thumbnail} />
-              ))}
+    <ImageBackground source={shared5} style={{ width: '100%', height: '100%', position: 'absolute' }} >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <KeyboardAvoidingView style={styles.container} behavior="padding">
+          <Text style={styles.text}>Start by typing the address</Text>
+          <GooglePlacesAutocomplete
+            placeholder="Search"
+            ref={googlePlacesRef}
+            fetchDetails
+            onPress={handlePlaceSelect}
+            query={{
+              key: MapApiKey,
+              language: 'en',
+            }}
+            styles={{
+              textInput: {
+                height: 50,
+                marginVertical: 10,
+                borderWidth: 1,
+                padding: 10,
+                borderColor: '#FFD449',
+                backgroundColor: 'white',
+                borderRadius: 10,
+              },
+            }}
+          />
+          {showInputs && (
+            <View style={styles.View}>
+              <TextInput
+                style={styles.input}
+                placeholder="First Name"
+                onChangeText={setFirstName}
+                value={firstName}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Last Name"
+                onChangeText={setLastName}
+                value={lastName}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Price in €"
+                onChangeText={setPrice}
+                value={price}
+                keyboardType="numeric"
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Description"
+                onChangeText={setDescription}
+                value={description}
+                multiline
+              />
+              <Button title="Add Photo" onPress={pickImage} buttonStyle={styles.Button} />
+              <View style={styles.imageContainer}>
+                {images.map((image, index) => (
+                  <Image key={index} source={{ uri: image }} style={styles.thumbnail} />
+                ))}
+              </View>
+              <Button title="Submit Spot" onPress={handleSubmit} buttonStyle={styles.Button} />
             </View>
-            <Button title="Submit Spot" onPress={handleSubmit} buttonStyle={styles.Button} />
-          </View>
-        )}
-      </KeyboardAvoidingView>
-    </TouchableWithoutFeedback>
+          )}
+        </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
+    </ImageBackground>
   );
 }
 
@@ -221,8 +224,9 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
     padding: 20,
+    paddingTop: 100,
   },
   View: {
     flex: 1,
