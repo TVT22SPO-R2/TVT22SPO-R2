@@ -16,16 +16,18 @@ export default function ChangePassword() {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        placeholder="New Password"
-        value={newPassword}
-        onChangeText={setNewPassword}
-        secureTextEntry
-        style={styles.input}
-      />
-      <TouchableOpacity style={[styles.button, {backgroundColor: '#a8d5e2'}]} onPress={handleChangePassword}>
-        <Text style={styles.buttonText}>Submit New Password</Text>
-      </TouchableOpacity>
+      <View style={styles.contentContainer}>
+        <TextInput
+          placeholder="New Password"
+          value={newPassword}
+          onChangeText={setNewPassword}
+          secureTextEntry
+          style={styles.input}
+        />
+        <TouchableOpacity style={[styles.button, { backgroundColor: '#a8d5e2' }]} onPress={handleChangePassword}>
+          <Text style={styles.buttonText}>Submit New Password</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -35,25 +37,40 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: '100%',
     alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  contentContainer: {
+    borderRadius: 10,
+    width: '90%',
+    backgroundColor: '#fffff0',
+    maxWidth: 400,
+    paddingLeft: 80,
+    paddingRight: 80,
+    paddingTop: 20,
+    paddingBottom: 20,
+    borderWidth: 1,
+    borderColor: '#ffd449',
   },
   input: {
-    width: '90%',
+    width: '100',
     padding: 10,
     marginVertical: 10,
     borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 5,
+    borderColor: '#ffd449',
+    borderRadius: 10,
+    backgroundColor: 'white',
   },
   button: {
-    width: '90%',
+    width: '100%',
     padding: 10,
-    marginVertical: 10,
     borderWidth: 1,
+    marginTop: 10,
     borderColor: '#ddd',
     borderRadius: 5,
-    alignItems: 'center', // Center the text inside the button
+    alignItems: 'center',
   },
   buttonText: {
-    color: 'black', // Ensure the text inside the button is easily readable
+    color: 'black',
+
   },
 });

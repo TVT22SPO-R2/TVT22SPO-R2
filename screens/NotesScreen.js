@@ -17,13 +17,13 @@ const NotesScreen = () => {
       Alert.alert('Invalid Input', 'Note cannot be empty.');
       return;
     }
-  
+
     if (user && user.uid) {
       const newItem = {
         text: note,
         createdAt: new Date().toISOString(),
       };
-  
+
       try {
         const docRef = await addDoc(collection(firestore, "user_notes", user.uid, "notes"), newItem);
         newItem.id = docRef.id;
@@ -37,7 +37,7 @@ const NotesScreen = () => {
       }
     }
   };
-  
+
   const fetchNotesFromFirestore = async () => {
     const notesArray = [];
     if (user && user.uid) {
@@ -85,7 +85,7 @@ const NotesScreen = () => {
 
 
   const storeData = async (newItems) => {
-    if(user) { // Check for user existence
+    if (user) { // Check for user existence
       const userSpecificStorageKey = `${STORAGE_KEY}_${user.uid}`;
       try {
         const jsonValue = JSON.stringify(newItems);
@@ -101,14 +101,14 @@ const NotesScreen = () => {
       Alert.alert('Error', 'Note cannot be empty.');
       return;
     }
-  
+
     const newNote = {
       id: Date.now().toString(),
       text: note,
       createdAt: new Date().toISOString(),
       source: 'local' // Set source as 'local'
     };
-    
+
     const updatedNotes = [...notes, newNote];
     setNotes(updatedNotes); // Immediately add to state with the correct source
     await storeData(updatedNotes); // Save updated notes list to local storage
@@ -118,7 +118,7 @@ const NotesScreen = () => {
   const deleteNoteLocally = async (noteId) => {
     const updatedNotes = notes.filter(note => note.id !== noteId);
     setNotes(updatedNotes);
-  
+
     if (user) {
       try {
         await AsyncStorage.setItem(`${STORAGE_KEY}_${user.uid}`, JSON.stringify(updatedNotes));
@@ -129,7 +129,7 @@ const NotesScreen = () => {
       }
     }
   };
-  
+
 
   return (
     <View style={styles.container}>
@@ -145,25 +145,25 @@ const NotesScreen = () => {
       <Text style={styles.title}>Save Notes Locally</Text>
       <Button title="Add note..." onPress={saveNote} />
       <Button title="Fetch Notes..." onPress={fetchNotesFromLocalStorage} />
-      
+
       <ScrollView style={styles.notesContainer}>
-      {notes.map((note) => (
-  <View key={note.id} style={styles.noteContainer}>
-    <Text style={styles.noteText}>{note.text}</Text>
-    <View style={styles.buttonsContainer}>
-      {note.source === 'firebase' && (
-        <TouchableOpacity style={styles.deleteButton} onPress={() => deleteNoteFromFirebase(note.id)}>
-          <Text style={styles.deleteButtonText}>x</Text>
-        </TouchableOpacity>
-      )}
-      {note.source === 'local' && (
-        <TouchableOpacity style={styles.deleteButton} onPress={() => deleteNoteLocally(note.id)}>
-          <Text style={styles.deleteButtonText}>x</Text>
-        </TouchableOpacity>
-      )}
-    </View>
-  </View>
-))}
+        {notes.map((note) => (
+          <View key={note.id} style={styles.noteContainer}>
+            <Text style={styles.noteText}>{note.text}</Text>
+            <View style={styles.buttonsContainer}>
+              {note.source === 'firebase' && (
+                <TouchableOpacity style={styles.deleteButton} onPress={() => deleteNoteFromFirebase(note.id)}>
+                  <Text style={styles.deleteButtonText}>x</Text>
+                </TouchableOpacity>
+              )}
+              {note.source === 'local' && (
+                <TouchableOpacity style={styles.deleteButton} onPress={() => deleteNoteLocally(note.id)}>
+                  <Text style={styles.deleteButtonText}>x</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        ))}
       </ScrollView>
     </View>
   );
