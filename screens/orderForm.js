@@ -137,6 +137,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     fontSize: 16,
     fontWeight: 'bold',
+    color: '#FFA500',
   },
   input: {
     marginBottom: 15,
@@ -147,9 +148,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   label2: {
-    marginBottom: 5,
+    marginBottom: 25,
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#FFA500',
   },
 });
 
