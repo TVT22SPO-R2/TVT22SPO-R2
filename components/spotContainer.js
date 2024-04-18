@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, FlatList, ImageBackground, TouchableOpacity } f
 import { firestore, collection, getDocs } from '../firebase/Config';
 import { useNavigation } from '@react-navigation/native';
 
-/**/
 
 const ItemContainer = ({ items, navigation }) => {
     const [spotsForSale, setSpotsForSale] = useState([]);
@@ -41,11 +40,11 @@ const ItemContainer = ({ items, navigation }) => {
                 <Text style={styles.title}>{item.address}</Text>
                 {item.images && item.images.length > 0 ? (
                     <ImageBackground source={{ uri: item.images[0] }} style={styles.image}>
-                        <Text style={styles.price}>{item.price}</Text>
                     </ImageBackground>
                 ) : (
                     <View style={styles.placeholderImage} />
                 )}
+                <Text style={styles.price}>{item.price}</Text>
                 <Text style={styles.description}>{item.description}</Text>
             </TouchableOpacity>
         </View>
@@ -79,12 +78,13 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     price: {
+        marginTop: 5,
         fontSize: 14,
         color: '#888',
     },
     description: {
         fontSize: 14,
-        maxWidth: 120, // Set maximum width for the description
+        maxWidth: 120,
         overflow: 'hidden',
     },
     image: {

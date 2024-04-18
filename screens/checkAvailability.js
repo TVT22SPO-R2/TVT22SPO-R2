@@ -8,8 +8,8 @@ import { Calendar } from "react-native-calendars";
 
 export default function CheckAvailability() {
     const [availability, setAvailability] = useState([]);
-    const [fetchData, setFetchData] = useState(false); // State to trigger data fetch
-    const [selectedDates, setSelectedDates] = useState({}); // State to store selected dates
+    const [fetchData, setFetchData] = useState(false);
+    const [selectedDates, setSelectedDates] = useState({});
     const navigation = useNavigation();
     const route = useRoute();
     const { product } = route.params;
@@ -22,11 +22,10 @@ export default function CheckAvailability() {
         const fetchAvailability = async () => {
             try {
                 console.log('Fetching availability...');
-                const spotDocRef = doc(firestore, 'Spots', product.id); // Reference to the document
-                const availabilityCollectionRef = collection(spotDocRef, 'availability'); // Reference to the availability collection within the document
+                const spotDocRef = doc(firestore, 'Spots', product.id);
+                const availabilityCollectionRef = collection(spotDocRef, 'availability');
                 const querySnapshot = await getDocs(availabilityCollectionRef);
 
-                // Log the path to ensure it's correct
                 console.log('Availability collection reference:', availabilityCollectionRef.path);
 
                 if (!querySnapshot.empty) {
@@ -35,7 +34,6 @@ export default function CheckAvailability() {
                         ...doc.data()
                     }));
 
-                    // Update state with fetched data
                     setAvailability(fetchedAvailability);
                     console.log('Fetched availability:', fetchedAvailability);
                 } else {
@@ -48,9 +46,9 @@ export default function CheckAvailability() {
 
         if (fetchData) {
             fetchAvailability();
-            setFetchData(false); // Reset the state after fetching data
+            setFetchData(false);
         }
-    }, [fetchData]); // useEffect will re-run whenever fetchData state changes
+    }, [fetchData]);
 
 
     const clearSelectedDates = () => {
@@ -72,7 +70,6 @@ export default function CheckAvailability() {
     const handleSaveDates = () => {
         const selectedDatesArray = Object.keys(selectedDates);
         const updatedProduct = { ...product, selectedDates: selectedDatesArray };
-        // Navigate to the next screen with the updated product prop
         navigation.navigate('Cart', { updatedProduct });
         console.log('Selected dates:', selectedDatesArray);
         console.log('Updated product:', updatedProduct);
