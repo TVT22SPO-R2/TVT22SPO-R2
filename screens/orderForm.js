@@ -43,16 +43,24 @@ const OrderForm = () => {
 
   const submitFormToFirestore = async (values, resetForm) => {
     try {
+      // Add form data to Firestore
       const docRef = await addDoc(collection(firestore, 'Orders'), values);
       console.log("Document written with ID: ", docRef.id);
       console.log("Form data sent to Firestore: ", values);
+  
+      // Reset the form
       resetForm();
-      // Navigate to PayPal page with totalAmount
-      navigation.navigate('Paypal page', { totalAmount });
+  
+      // Extract email from form values
+      const { email } = values;
+  
+      // Navigate to OrderConfirmation page with totalAmount and email
+      navigation.navigate('OrderConfirmation', { totalAmount, email });
     } catch (error) {
       console.error("Error adding document: ", error);
     }
   };
+  
 
 
   return (

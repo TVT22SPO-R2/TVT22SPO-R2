@@ -83,9 +83,15 @@ const MapScreen = ({ navigation }) => {
   };
 
   const handleMarkerPress = (marker, navigation) => {
-    console.log('Marker pressed:', marker);
-    navigation.navigate('ViewProduct', { product: marker });
+    try {
+      console.log('Marker pressed:', marker);
+      navigation.navigate('ViewProduct', { product: marker });
+    } catch (error) {
+      console.error('Error handling marker press:', error);
+    }
   };
+  
+  
 
   const handlePlaceSelected = useCallback(async (data) => {
     console.log('Selected Place Data:', data);
