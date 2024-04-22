@@ -175,6 +175,7 @@ function AppContent() {
           component={ViewProduct}
           options={{
             tabBarButton: () => null,
+            headerShown: false
           }}
         />
         <Tab.Screen

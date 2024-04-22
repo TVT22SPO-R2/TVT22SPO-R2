@@ -10,7 +10,7 @@ import shared5 from '../assets/shared5.jpg';
 // Function to calculate the average rating
 const calculateAverageRating = (reviews) => {
     if (reviews.length === 0) return 0;
-    
+
     const totalRating = reviews.reduce((acc, curr) => acc + curr.rating, 0);
     return totalRating / reviews.length;
 };
@@ -98,57 +98,60 @@ export default function ViewProduct({ route, navigation }) {
     const averageRating = calculateAverageRating(reviews);
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>{product.address}</Text>
-            <ImageBackground source={{ uri: product.images[0] }} style={styles.image}>
-                <View style={styles.overlay}>
-                    <Text style={styles.price}>{product.price}</Text>
-                    <Text style={styles.description}>{product.description}</Text>
-                </View>
-            </ImageBackground>
-            <LocationMiniMap coordinates={{ latitude: product.latitude, longitude: product.longitude }} />
-            <TouchableOpacity
-                style={styles.button}
-                onPress={handleBooking}
-            >
-                <Text style={styles.buttonText}>Check availability & book now!</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={toggleAddReviewModal}>
-                <Text style={styles.buttonText}>Add Review</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={handleCheckReviews}>
-                <Text style={styles.buttonText}>Check Reviews</Text>
-            </TouchableOpacity>
+        <ImageBackground source={shared5} style={{ flex: 1, resizeMode: 'cover', justifyContent: 'center' }}>
+            <View style={styles.container}>
+                <Text style={styles.title}>{product.address}</Text>
+                <ImageBackground source={{ uri: product.images[0] }} style={styles.image}>
+                    <View style={styles.overlay}>
+                        <Text style={styles.price}>{product.price}</Text>
+                        <Text style={styles.description}>{product.description}</Text>
+                    </View>
+                </ImageBackground>
+                <LocationMiniMap coordinates={{ latitude: product.latitude, longitude: product.longitude }} />
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={handleBooking}
+                >
+                    <Text style={styles.buttonText}>Check availability & book now!</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={toggleAddReviewModal}>
+                    <Text style={styles.buttonText}>Add Review</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={handleCheckReviews}>
+                    <Text style={styles.buttonText}>Check Reviews</Text>
+                </TouchableOpacity>
 
-            <AddReviewModal
-                isVisible={isAddReviewModalVisible}
-                onClose={toggleAddReviewModal}
-                onSubmit={handleReviewSubmit}
-                product={product}
-            />
+                <AddReviewModal
+                    isVisible={isAddReviewModalVisible}
+                    onClose={toggleAddReviewModal}
+                    onSubmit={handleReviewSubmit}
+                    product={product}
+                />
 
-            <Modal visible={isCheckReviewsModalVisible} animationType="slide">
-                <View style={styles.modalContainer}>
-                    <Text style={styles.modalTitle}>Reviews for {product.address}</Text>
-                    <Text style={styles.averageRating}>
-                        Average Rating: {averageRating.toFixed(1)} ({renderStarRatings(averageRating)})
-                    </Text>
-                    <FlatList
-                        data={reviews}
-                        renderItem={renderReviewItem}
-                        keyExtractor={(item, index) => index.toString()}
-                    />
-                    <TouchableOpacity style={styles.closeButton} onPress={toggleCheckReviewsModal}>
-                        <Text style={styles.closeButtonText}>Close</Text>
-                    </TouchableOpacity>
-                </View>
-            </Modal>
-        </View>
+                <Modal visible={isCheckReviewsModalVisible} animationType="slide">
+                    <View style={styles.modalContainer}>
+                        <Text style={styles.modalTitle}>Reviews for {product.address}</Text>
+                        <Text style={styles.averageRating}>
+                            Average Rating: {averageRating.toFixed(1)} ({renderStarRatings(averageRating)})
+                        </Text>
+                        <FlatList
+                            data={reviews}
+                            renderItem={renderReviewItem}
+                            keyExtractor={(item, index) => index.toString()}
+                        />
+                        <TouchableOpacity style={styles.closeButton} onPress={toggleCheckReviewsModal}>
+                            <Text style={styles.closeButtonText}>Close</Text>
+                        </TouchableOpacity>
+                    </View>
+                </Modal>
+            </View>
+        </ImageBackground>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
+        paddingTop: 20,
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
