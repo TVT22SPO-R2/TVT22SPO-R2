@@ -41,31 +41,19 @@ const SearchScreen = () => {
 
     try {
       console.log("osote1", address);
-      if (address && address !== searchFilters.prevAddress) {
-        const response = await Location.geocodeAsync(address);
-        console.log("osote", address);
-        if (response.length > 0) {
-          const { latitude, longitude } = response[0];
+      if (address) {
+        // Extract the part of the address before the postal code
+        const addressWithoutPostalCode = address.split(',')[0].trim();
       
-          const locationQuery = query(collection(firestore, 'Spots'), where('location.lat', '==', latitude), where('location.lng', '==', longitude));
-          console.log("locationquery", locationQuery)
+        // Query for spots where the address field contains the extracted address
+        const addressQuery = query(
+          collection(firestore, 'Spots'),
+          where('address', '>=', addressWithoutPostalCode),
+          where('address', '<', addressWithoutPostalCode + '\uf8ff')
+        );
       
-          const locationSnapshot = await getDocs(locationQuery);
-          console.log("snäppi", locationSnapshot);
-      
-          const results = locationSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      
-          filters.push(...results);
-          console.log("tulos", results);
-      
-          setSearchFilters(prevState => ({
-            ...prevState,
-            prevAddress: address // Remember the address for future comparison
-          }));
-        } else {
-          console.error('No location found for the provided address');
-          setShowAlert(true);
-        }
+        const addressSnapshot = await getDocs(addressQuery);
+        filters.push(...addressSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
       }
 
       // Price filter
@@ -128,8 +116,7 @@ const SearchScreen = () => {
       setSearchFilters(prevState => ({
         ...prevState,
         address: details.formatted_address,
-        latitude: details.geometry.location.lat,
-        longitude: details.geometry.location.lng
+        // You can optionally set latitude and longitude here if needed
       }));
     }
   };
@@ -219,13 +206,13 @@ const SearchScreen = () => {
           )}
         </View>
         {searchResults.length > 0 && (
-          <View style={styles.contentContainer}>
-            <FlatList
-              data={searchResults}
-              renderItem={({ item }) => {
-                return (
-                  <View style={styles.spotContainer}>
-                    <Text style={styles.spotText}>Address: {item.address}</Text>
+  <View style={styles.contentContainer}>
+    <FlatList
+      data={searchResults}
+      renderItem={({ item }) => {
+        return (
+          <View style={styles.spotContainer}>
+            <Text style={styles.spotText}>Address: {item.address}</Text>
                     <Text style={styles.spotText}>Price: {item.price}</Text>
                     <Text style={styles.spotText}>Description: {item.description}</Text>
                     <Text style={styles.spotText}>Name: {item.firstName} {item.lastName}</Text>
