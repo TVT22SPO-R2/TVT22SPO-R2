@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, FlatList, StyleSheet, Alert, TouchableOpacity, ImageBackground } from 'react-native';
+import { View, Text, TextInput, Button, FlatList, StyleSheet, Alert, TouchableOpacity, ImageBackground,Platform } from 'react-native';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { firestore } from '../firebase/Config';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import * as Location from 'expo-location';
 import AddToCartButton from '../components/addToCartButton';
 import shared5 from '../assets/shared5.jpg';
+import { useNavigation } from '@react-navigation/native';
 
 const MapApiKey = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
 
@@ -20,11 +21,14 @@ const SearchScreen = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
   const [selectedSpots, setSelectedSpots] = useState([]);
+  const navigation = useNavigation();
+
 
   const handleSearch = async () => {
     setShowAlert(false);
 
-    const { address, price, description, name } = searchFilters;
+    const { address, price, description, name} = searchFilters;
+
 
     // Array to store all the filter queries
     const filters = [];
@@ -32,25 +36,28 @@ const SearchScreen = () => {
     // Reset search results
     setSearchResults([]);
 
+    console.log("Search Filters:", searchFilters);
+
+
     try {
-      // Address filter
+      console.log("osote1", address);
       if (address && address !== searchFilters.prevAddress) {
         const response = await Location.geocodeAsync(address);
+        console.log("osote", address);
         if (response.length > 0) {
           const { latitude, longitude } = response[0];
-
-          const latQuery = query(collection(firestore, 'Spots'), where('location.latitude', '==', latitude));
-          const lngQuery = query(collection(firestore, 'Spots'), where('location.longitude', '==', longitude));
-
-          const [latSnapshot, lngSnapshot] = await Promise.all([getDocs(latQuery), getDocs(lngQuery)]);
-
-          const results = [
-            ...latSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })),
-            ...lngSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-          ];
-
+      
+          const locationQuery = query(collection(firestore, 'Spots'), where('location.lat', '==', latitude), where('location.lng', '==', longitude));
+          console.log("locationquery", locationQuery)
+      
+          const locationSnapshot = await getDocs(locationQuery);
+          console.log("snäppi", locationSnapshot);
+      
+          const results = locationSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      
           filters.push(...results);
-
+          console.log("tulos", results);
+      
           setSearchFilters(prevState => ({
             ...prevState,
             prevAddress: address // Remember the address for future comparison
@@ -105,8 +112,10 @@ const SearchScreen = () => {
         }
       });
 
+      
       const resultsWithAddresses = await Promise.all(addressPromises);
       setSearchResults(resultsWithAddresses);
+      console.log("tulos2", resultsWithAddresses)
       setShowAlert(resultsWithAddresses.length === 0);
     } catch (error) {
       console.error("Error executing query:", error);
@@ -127,36 +136,60 @@ const SearchScreen = () => {
 
   const handleAddToCart = (item) => {
     // Add the selected spot to the list
-    setSelectedSpots([...selectedSpots, item]);
-  };
+    navigation.navigate('ViewProduct', { product: { ...item, latitude: item.location.lat, longitude: item.location.lng } });
+};
 
   return (
     <ImageBackground source={shared5} style={{ flex: 1, resizeMode: 'cover', justifyContent: 'center' }}>
       <View style={styles.container}>
         <View style={styles.contentContainerTop}>
           <GooglePlacesAutocomplete
-            placeholder='Search by Address'
-            fetchDetails
-            onPress={handlePlaceSelect}
-            query={{
-              key: MapApiKey,
-              language: 'en',
-            }}
-            styles={{
-              textInput: {
-                height: 50,
-                marginVertical: 10,
-                borderWidth: 1,
-                padding: 10,
-                borderColor: '#FFD449',
-                backgroundColor: 'white',
-                borderRadius: 10,
-              },
-              textInputContainer: {
-                marginHorizontal: 10,
-              },
-            }}
-          />
+          placeholder='Search by Address'
+          fetchDetails
+          onPress={handlePlaceSelect}
+          query={{
+            key: MapApiKey,
+            language: 'en',
+          }}
+  styles={{
+    container: {
+      flex: 0,
+      position: 'relative',
+      zIndex: 10,
+      marginHorizontal: 10, 
+      marginBottom: 0,
+    },
+    textInputContainer: {
+      backgroundColor: 'transparent',
+      borderTopWidth: 0,
+      borderBottomWidth: 0,
+      paddingVertical: 20,
+      paddingHorizontal: 0,
+    },
+    textInput: {
+      height: 50,
+      marginTop: Platform.OS === 'ios' ? 0 : 10,
+      marginBottom: 10,
+      borderWidth: 1,
+      borderColor: '#FFD449',
+      backgroundColor: 'white',
+      borderRadius: 10,
+      paddingHorizontal: 10,
+      zIndex: 1, 
+    },
+    listView: {
+      backgroundColor: 'white',
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: '#FFD449',
+      marginHorizontal: 10,
+      zIndex: 9999,
+    },
+    poweredContainer: {
+      display: 'none',
+    },
+  }}
+/>
         </View>
         <View style={styles.contentContainer}>
           <TextInput

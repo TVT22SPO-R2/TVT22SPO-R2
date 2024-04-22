@@ -15,7 +15,7 @@ const Stack = createStackNavigator();
 export default function ShoppingCartStack() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { updatedProduct } = route.params;
+  const  updatedProduct  = route.params?.updatedProduct;
   console.log("routeparamssi", route.params)
 
   return (
@@ -31,6 +31,7 @@ export default function ShoppingCartStack() {
     >
       <Stack.Screen name="ShoppingCart" component={ShoppingCart} initialParams={{ updatedProduct }}
         options={{
+          headerShown: false,
           title: '',
           headerTitleStyle: { color: 'orange' },
         }} />

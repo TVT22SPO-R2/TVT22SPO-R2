@@ -1,19 +1,28 @@
-import React, { useEffect } from "react";
-import { View, Text, FlatList, StyleSheet, Dimensions, ImageBackground } from "react-native";
-import { useNavigation, useRoute } from '@react-navigation/native';
+import React, { useEffect, useState } from "react";
+import { View, Text, FlatList, StyleSheet, Dimensions, ImageBackground, Alert } from "react-native";
+import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import { Button } from 'react-native-elements';
 import shared5 from '../assets/shared5.jpg';
 
-export default function ShoppingCart() {
-    const navigation = useNavigation();
-    const route = useRoute();
-    const { updatedProduct } = route.params; // Use optional chaining to avoid errors if route.params is undefined
-    console.log("routeparamssi", route.params)
+export default function ShoppingCart({navigation, route }) {
+    //const navigation = useNavigation();
+    //const route = useRoute();
+    const [updatedProduct, setUpdatedProduct] = useState(null);
+    const [shouldRenderList, setShouldRenderList] = useState(false);
+    console.log("Route params", route.params);
 
-    useEffect(() => {
-        console.log("Selected Spots:", updatedProduct);
-    }, [updatedProduct]);
 
+    useFocusEffect(
+        React.useCallback(() => {
+            if (route.params && route.params.updatedProduct) {
+                setUpdatedProduct(route.params.updatedProduct);
+                setShouldRenderList(true);
+            } else {
+                setUpdatedProduct(null);
+                setShouldRenderList(false);
+            }
+        }, [route.params])
+    );
     const convertPriceToNumber = (priceString) => {
         // Remove euro symbol and convert to number
         const priceNumber = parseFloat(priceString.replace('€', '').trim());
@@ -47,29 +56,37 @@ export default function ShoppingCart() {
     console.log("Total Amount:", totalAmount);
 
     const handleContinueToOrder = () => {
-        // Navigate to OrderForm screen with totalAmount
-        navigation.navigate('OrderForm', { totalAmount });
+        if (updatedProduct) {
+            navigation.navigate('OrderForm', { totalAmount });
+        } else {
+            Alert.alert('No Product Selected', 'Select a product on map or search for a spot in search tab before proceeding to order.');
+        }
     };
 
     return (
         <ImageBackground source={shared5} style={{ width: '100%', height: '100%', position: 'absolute' }} >
             <View style={styles.container}>
-                <FlatList
-                    data={updatedProduct ? [updatedProduct] : []}
-                    renderItem={({ item }) => (
-                        <View style={styles.spotContainer}>
-                            <Text style={styles.spotText}>Address: {item.address}</Text>
-                            <Text style={styles.spotText}>Price: {item.price}</Text>
-                            <Text style={styles.spotText}>Description: {item.description}</Text>
-                            <Text style={styles.spotText}>Name: {item.firstName} {item.lastName}</Text>
-                            <Text style={styles.text}>Selected Dates:</Text>
-                            {item.selectedDates && item.selectedDates.map((date, index) => (
-                                <Text key={index} style={styles.text}>{date}</Text>
-                            ))}
-                        </View>
-                    )}
-                    keyExtractor={(item, index) => index.toString()}
-                />
+                {shouldRenderList && updatedProduct && (
+                    <FlatList
+                        data={updatedProduct ? [updatedProduct] : []}
+                        renderItem={({ item }) => (
+                            <View style={styles.spotContainer}>
+                                <Text style={styles.spotText}>Address: {item.address}</Text>
+                                <Text style={styles.spotText}>Price: {item.price}</Text>
+                                <Text style={styles.spotText}>Description: {item.description}</Text>
+                                <Text style={styles.spotText}>Name: {item.firstName} {item.lastName}</Text>
+                                <Text style={styles.text}>Selected Dates:</Text>
+                                {item.selectedDates && item.selectedDates.map((date, index) => (
+                                    <Text key={index} style={styles.text}>{date}</Text>
+                                ))}
+                            </View>
+                        )}
+                        keyExtractor={(item, index) => index.toString()}
+                    />
+                )}
+                {!shouldRenderList && (
+                    <Text>No items in shopping cart</Text>
+                )}
                 <View style={styles.submitButtonContainer}>
                     <Button
                         title="Continue to Order"
@@ -81,7 +98,6 @@ export default function ShoppingCart() {
         </ImageBackground>
     );
 }
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
