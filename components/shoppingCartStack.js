@@ -15,8 +15,9 @@ const Stack = createStackNavigator();
 export default function ShoppingCartStack() {
   const navigation = useNavigation();
   const route = useRoute();
-  const  updatedProduct  = route.params?.updatedProduct;
+  const updatedProduct = route.params?.updatedProduct;
   console.log("routeparamssi", route.params)
+  console.log(updatedProduct, "updatedProduct")
 
   return (
     <Stack.Navigator initialRouteName="ShoppingCart"

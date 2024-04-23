@@ -3,23 +3,28 @@ import { View, Text, FlatList, StyleSheet, Dimensions, ImageBackground, Alert } 
 import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import { Button, Icon } from 'react-native-elements';
 import shared5 from '../assets/shared5.jpg';
+import { firestore, collection, doc, setDoc } from '../firebase/Config';
 
 export default function ShoppingCart({ navigation, route }) {
     const [updatedProduct, setUpdatedProduct] = useState(null);
     const [shouldRenderList, setShouldRenderList] = useState(false);
     console.log("Route params", route.params);
 
-    useFocusEffect(
-        React.useCallback(() => {
-            if (route.params && route.params.updatedProduct) {
-                setUpdatedProduct(route.params.updatedProduct);
-                setShouldRenderList(true);
-            } else {
-                setUpdatedProduct(null);
-                setShouldRenderList(false);
-            }
-        }, [route.params])
-    );
+    useEffect(() => {
+        if (route.params && route.params.updatedProduct) {
+            console.log("cart params" + route.params)
+            setUpdatedProduct(route.params.updatedProduct);
+            setShouldRenderList(true);
+        }
+    }, [route.params]);
+
+    useEffect(() => {
+        // Clear route params when component mounts
+        if (!route.params || !route.params.updatedProduct) {
+            resetShoppingCart();
+            console.log("resetShoppingCart" + route.params)
+        }
+    }, [route.params, resetShoppingCart]);
 
     const convertPriceToNumber = (priceString) => {
         // Remove euro symbol and convert to number
@@ -31,20 +36,20 @@ export default function ShoppingCart({ navigation, route }) {
     //Muodostetaan totalAmount kertomalla pävien määrä tuotteen hinnalla
     const calculateTotalAmount = (updatedProduct) => {
         console.log("Updated Product:", updatedProduct); // Log the updatedProduct
-    
+
         if (!updatedProduct) return 0;
-    
+
         let totalAmount = 0;
-    
+
         // Ensure updatedProduct is an array
         const productsArray = Array.isArray(updatedProduct) ? updatedProduct : [updatedProduct];
-    
+
         productsArray.forEach(product => {
             const price = convertPriceToNumber(product.price);
             const datesCount = product.selectedDates ? product.selectedDates.length : 0;
             totalAmount += price * datesCount;
         });
-    
+
         console.log("Total Amount:", totalAmount); // Log the totalAmount
         return totalAmount;
     };
@@ -53,17 +58,35 @@ export default function ShoppingCart({ navigation, route }) {
     console.log("Summa", totalAmount);
     //const totalAmount = 1.00;
 
-    const handleContinueToOrder = () => {
+    // Function to save selected dates to Firestore
+    const saveSelectedDatesToFirestore = async (productId, selectedDates) => {
+        const availabilityRef = collection(doc(firestore, 'Spots', productId), 'availability');
+
+        // Iterate over the selected dates array and save each date as a document
+        for (const date of selectedDates) {
+            const dateDocRef = doc(availabilityRef, date);
+            await setDoc(dateDocRef, { date });
+        }
+
+        console.log('Selected dates saved to Firestore');
+    };
+
+    const handleContinueToOrder = async () => {
         if (updatedProduct) {
+            const { id, selectedDates } = updatedProduct;
+            // Save selected dates to Firestore
+            await saveSelectedDatesToFirestore(id, selectedDates);
             navigation.navigate('OrderForm', { totalAmount });
+            resetShoppingCart();
         } else {
             Alert.alert('No Product Selected', 'Select a product on map or search for a spot in search tab before proceeding to order.');
         }
     };
 
-    const removeProduct = () => {
-        setUpdatedProduct(null); // Clear the shopping cart by setting updatedProduct to null
+    const resetShoppingCart = () => {
+        setShouldRenderList(false);
     };
+
 
     return (
         <ImageBackground source={shared5} style={{ width: '100%', height: '100%', position: 'absolute' }} >
@@ -83,7 +106,7 @@ export default function ShoppingCart({ navigation, route }) {
                                 ))}
                                 <Button
                                     title="Remove"
-                                    onPress= {removeProduct}
+                                    onPress={resetShoppingCart}
                                     buttonStyle={styles.removeButton}
                                     icon={<Icon name="delete" size={18} color="white" />}
                                 />

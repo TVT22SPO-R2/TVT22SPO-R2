@@ -15,7 +15,7 @@ export default function CheckAvailability() {
     const route = useRoute();
     const { product } = route.params;
 
-    console.log('Product:', product);
+    console.log('Productcheck:', product);
 
 
 
@@ -76,6 +76,8 @@ export default function CheckAvailability() {
         console.log('Updated product:', updatedProduct);
         console.log('Product:', product)
         console.log('Navigating to Cart screen...');
+        clearFetchedDates();
+        clearSelectedDates();
     };
 
     const handleFetchAvailability = () => {
@@ -83,6 +85,7 @@ export default function CheckAvailability() {
         clearFetchedDates();
         setFetchData(true);
     };
+
 
     return (
         <ImageBackground source={shared5} style={{ flex: 1, resizeMode: "cover", justifyContent: "center" }}>
