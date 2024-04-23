@@ -39,6 +39,7 @@ export default function ShoppingCartStack() {
         name="OrderForm"
         component={OrderForm}
         options={{
+          headerShown: false,
           title: '',
           headerTitleStyle: { color: 'orange' },
         }}
