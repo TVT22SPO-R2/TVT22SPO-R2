@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { View, Text } from 'react-native';
 import axios from 'axios';
+import { View, Text, StyleSheet, Button } from 'react-native';
 
 const OrderConfirmation = ({ route, navigation }) => {
   const { totalAmount, email } = route.params;
@@ -29,7 +29,7 @@ const OrderConfirmation = ({ route, navigation }) => {
           {
             headers: {
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${process.env.SENDGRID_API_KEY}`,
+              Authorization: `Bearer ${process.env.EXPO_PUBLIC_SENDGRID_API_KEY}`,
             },
           }
         );
@@ -37,7 +37,7 @@ const OrderConfirmation = ({ route, navigation }) => {
         console.log('Confirmation email sent successfully', response.data);
 
         // Navigate to the PayPal part after the confirmation email is sent
-        navigation.navigate('Paypal page', { totalAmount });
+        //navigation.navigate('Paypal page', { totalAmount });
       } catch (error) {
         console.error('Error sending confirmation email:', error);
       }
@@ -48,11 +48,32 @@ const OrderConfirmation = ({ route, navigation }) => {
   }, [email, navigation, totalAmount]);
 
   return (
-    <View>
-      <Text>Order Confirmation UI</Text>
-      {/* You can add more UI elements here as needed */}
+    <View style={styles.container}>
+      <Text style={styles.title}>Order Confirmation</Text>
+      <Text style={styles.text}>Thank you for your purchase!</Text>
+
+      {/* Render totalAmount received from the payment screen */}
+      <Text style={styles.text}>Amount Paid: {totalAmount} USD</Text>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  text: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+});
 
 export default OrderConfirmation;

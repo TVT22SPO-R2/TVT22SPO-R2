@@ -55,7 +55,7 @@ const OrderForm = () => {
       const { email } = values;
   
       // Navigate to OrderConfirmation page with totalAmount and email
-      navigation.navigate('OrderConfirmation', { totalAmount, email });
+      navigation.navigate('Paypal page', { totalAmount, email });
     } catch (error) {
       console.error("Error adding document: ", error);
     }

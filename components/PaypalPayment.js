@@ -91,6 +91,7 @@ onNavigationStateChange = (webViewState) => {
           paymentId: this.state.paymentId,
           // Assuming totalAmount is also relevant for the success scenario
           totalAmount: this.props.route.params?.totalAmount,
+          email: this.props.route.params?.email,
       });
   } else if (webViewState.url.includes("https://example.com/cancel")) {
       console.log('Cancel URL reached:', webViewState.url);
