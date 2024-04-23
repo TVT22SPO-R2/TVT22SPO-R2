@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Button, StyleSheet, Modal, Alert, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, Button, StyleSheet, Modal, Alert, TextInput, TouchableOpacity, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { firestore, collection, addDoc } from '../firebase/Config';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -50,6 +50,7 @@ export default function AddReviewModal({ isVisible, onClose, onSubmit, product }
 
   return (
     <Modal visible={isVisible} animationType="slide">
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={styles.container}>
         <Text style={styles.label}>Rating:</Text>
         <View style={styles.starsContainer}>
@@ -74,6 +75,7 @@ export default function AddReviewModal({ isVisible, onClose, onSubmit, product }
         <Button title="Submit Review" onPress={handleSubmit} />
         <Button title="Cancel" onPress={onClose} />
       </View>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 }
