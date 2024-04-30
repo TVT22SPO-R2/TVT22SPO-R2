@@ -1,16 +1,23 @@
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { View, TextInput, StyleSheet, TouchableOpacity, Text, Alert } from 'react-native';
 import { auth, updatePassword } from '../firebase/Config'; // Ensure this path is correct
 
 export default function ChangePassword() {
   const [newPassword, setNewPassword] = useState('');
 
   const handleChangePassword = async () => {
+    // Check if the password is not empty and is at least 6 characters long
+    if (newPassword === '' || newPassword.length < 6) {
+      Alert.alert("Invalid Password", "Password must be at least 6 characters long.");
+      return;
+    }
+
     try {
       await updatePassword(auth.currentUser, newPassword);
-      alert('Password updated successfully!');
+      Alert.alert('Success', 'Password updated successfully!');
     } catch (error) {
       console.error('Password change error:', error);
+      Alert.alert('Error', 'Failed to update the password.');
     }
   };
 
